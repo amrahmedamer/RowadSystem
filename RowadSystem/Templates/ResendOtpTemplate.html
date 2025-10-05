@@ -1,0 +1,16 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Resend OTP</title>
+</head>
+<body style="font-family: sans-serif; background: #f9f9f9; padding: 20px;">
+    <div style="max-width: 500px; margin: auto; background: #fff; padding: 25px; border-radius: 8px; text-align: center;">
+        <h2 style="color: #1d4ed8;">Hello again, {{FirstName}}!</h2>
+        <p style="font-size: 16px; color: #333;">Here’s your new OTP code. Please use it to continue:</p>
+        <div style="font-size: 30px; font-weight: bold; color: #1d4ed8; margin: 20px 0;">{{OTP_CODE}}</div>
+        <p style="font-size: 14px; color: #666;">Code valid for {{ExpiryMinutes}} minutes.</p>
+        <p style="font-size: 13px; color: #aaa;">If you didn’t request this, just ignore this email.</p>
+    </div>
+</body>
+</html>

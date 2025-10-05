@@ -1,0 +1,156 @@
+﻿@* 
+ @page "/Login"
+@using Blazored.FluentValidation
+
+<div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 100vh; background-color: #f8f9fa;">
+    <div class="row shadow-lg rounded-4 overflow-hidden w-100" style="max-width: 1200px; height: 90vh;">
+
+        <!-- Left Side Image -->
+        <div class="col-md-6 d-none d-md-flex p-0">
+            <img src="Login.png" class="img-fluid h-100 w-100 object-fit-cover" alt="Login Illustration" />
+        </div>
+
+        <!-- Right Side Form -->
+        <div class="col-md-6 p-5 bg-white d-flex flex-column justify-content-center">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-lock mb-2" viewBox="0 0 16 16">
+                        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m0 5.996V14H3s-1 0-1-1 1-4 6-4q.845.002 1.544.107a4.5 4.5 0 0 0-.803.918A11 11 0 0 0 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664zM9 13a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1"/>
+                    </svg>
+                    Welcome Back
+                </h2>
+                <p class="text-muted fs-6">Sign in to continue to your account</p>
+            </div>
+
+            <!-- Login Form -->
+            <EditForm Model="_loginRequest" OnValidSubmit="@HandleLogin" class="needs-validation" novalidate>
+                <FluentValidationValidator />
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" for="emailInput">Email</label>
+                    <InputText id="emailInput" @bind-Value="_loginRequest.Email" class="form-control form-control-lg" placeholder="Enter your email" />
+                    <ValidationMessage For="@(() => _loginRequest.Email)" class="text-danger fs-6" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" for="passwordInput">Password</label>
+                    <InputText id="passwordInput" @bind-Value="_loginRequest.Password" type="password" class="form-control form-control-lg" placeholder="Enter your password" />
+                    <ValidationMessage For="@(() => _loginRequest.Password)" class="text-danger fs-6" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fs-5 transition hover-shadow">
+                    Login
+                </button>
+
+                @if (!string.IsNullOrWhiteSpace(_errorMessage))
+                {
+                    <div class="alert alert-danger mt-4 fs-6" role="alert">@_errorMessage</div>
+                }
+            </EditForm>
+
+            <div class="text-center mt-4">
+                <a href="/forgot-password" class="text-decoration-none fs-6 text-primary">Forgot your password?</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Smooth hover/focus effects for buttons and inputs */
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .btn.transition {
+        transition: all 0.3s ease;
+    }
+
+    .btn.transition:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+</style>
+ *@
+@page "/Login"
+@using Blazored.FluentValidation
+
+<div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 100vh; background-color: #f8f9fa;">
+    <div class="row" style="min-height: 100vh;">
+        <!-- Left Side Image -->
+        <div class="col-md-6 d-none d-md-flex p-0">
+            <img src="Login.png" class="img-fluid h-100 w-100 object-fit-cover" alt="Login Illustration" />
+        </div>
+
+        <!-- Right Side Form -->
+        <div class="col-md-6 p-5 bg-white d-flex flex-column justify-content-center">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-lock mb-2" viewBox="0 0 16 16">
+                        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m0 5.996V14H3s-1 0-1-1 1-4 6-4q.845.002 1.544.107a4.5 4.5 0 0 0-.803.918A11 11 0 0 0 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664zM9 13a1 1 0 0 1 1-1v-1a2 2 0 1 1 4 0v1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1zm3-3a1 1 0 0 0-1 1v1h2v-1a1 1 0 0 0-1-1" />
+                    </svg>
+                    Welcome Back
+                </h2>
+                <p class="text-muted fs-6">Sign in to continue to your account</p>
+            </div>
+
+            <!-- Login Form -->
+            <EditForm Model="_loginRequest" OnValidSubmit="@HandleLogin" class="needs-validation" novalidate>
+                <FluentValidationValidator />
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" for="emailInput">Email</label>
+                    <InputText id="emailInput" @bind-Value="_loginRequest.Email" class="form-control form-control-lg" placeholder="Enter your email" aria-label="Email" />
+                    <ValidationMessage For="@(() => _loginRequest.Email)" class="text-danger fs-6" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold" for="passwordInput">Password</label>
+                    <InputText id="passwordInput" @bind-Value="_loginRequest.Password" type="password" class="form-control form-control-lg" placeholder="Enter your password" aria-label="Password" />
+                    <ValidationMessage For="@(() => _loginRequest.Password)" class="text-danger fs-6" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fs-5 transition hover-shadow">
+                    Login
+                </button>
+
+                @if (!string.IsNullOrWhiteSpace(_errorMessage))
+                {
+                    <div class="alert alert-danger mt-4 fs-6" role="alert">@_errorMessage</div>
+                }
+            </EditForm>
+
+            <div class="text-center mt-4">
+                <a href="/forgot-password" class="text-decoration-none fs-6 text-primary">Forgot your password?</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Smooth hover/focus effects for buttons and inputs */
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .btn.transition {
+        transition: all 0.3s ease;
+    }
+
+        .btn.transition:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Adjust the hover effect for the login button */
+    .btn-primary:hover {
+        background-color: #0d6efd;
+        border-color: #0a58ca;
+    }
+
+    /* Custom shadow and transition for the form input and button */
+    .form-control, .btn {
+        transition: all 0.3s ease;
+    }
+</style>

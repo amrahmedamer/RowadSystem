@@ -1,0 +1,107 @@
+﻿@* @page "/live-notifications"
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.SignalR.Client
+
+<h3>إشعارات مباشرة 🔔</h3>
+
+<ul>
+    @foreach (var n in notifications)
+    {
+        <li><b>@n.Title</b>: @n.Message</li>
+    }
+</ul>
+
+
+ *@
+@page "/live-notifications"
+
+<AuthorizeView>
+    <Authorized>
+    <div class="container mt-4">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">🔔 إشعاراتي</h5>
+                <span class="badge bg-light text-dark">@notifications.Count إشعار</span>
+            </div>
+            <div class="card-body" style="max-height:400px; overflow-y:auto;">
+                @if (!notifications.Any())
+                {
+                    <div class="text-center text-muted">
+                        🎉 لا توجد إشعارات جديدة
+                    </div>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var n in notifications)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">@n.Title</div>
+                                    <small class="text-muted">@n.Message</small>
+                                </div>
+                               @*  <span class="badge @(n.IsRead ? "bg-secondary" : "bg-success") rounded-pill">
+                                    @(n.IsRead ? "مقروء" : "جديد")
+                                </span> *@
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+
+    </Authorized>
+<NotAuthorized>
+    <div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center px-3">
+        <img src="/ErrorImages/401-Unauthorized.png" alt="Access Denied"
+             class="img-fluid mb-4"
+             style="max-width: 50%; height: auto; min-width: 200px;">
+        <h3 class="text-danger mb-3">You are not authorized. Please login.</h3>
+        <NavLink href="/login" class="btn btn-primary btn-lg">Login</NavLink>
+    </div>
+</NotAuthorized>
+
+
+</AuthorizeView>
+
+
+
+@* @code {
+    private HubConnection hubConnection;
+    private List<NotificationDto> notifications = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var auth = await AuthStateProvider.GetAuthenticationStateAsync();
+        var userId = auth.User.FindFirst("sub")?.Value;
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/notificationHub")) // ✅ لازم الـ Package
+            .WithAutomaticReconnect()
+            .Build();
+
+        hubConnection.On<string, string>("ReceiveNotification", (title, message) =>
+        {
+            notifications.Insert(0, new NotificationDto
+            {
+                Title = title,
+                Message = message,
+                CreatedAt = DateTime.Now,
+                IsRead = false
+            });
+            InvokeAsync(StateHasChanged);
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
+ *@

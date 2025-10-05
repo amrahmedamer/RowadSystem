@@ -1,0 +1,67 @@
+﻿@page "/Shop"
+@* @using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<AuthorizeView>
+    <Authorized> *@
+
+<div class="container py-4">
+    <div class="row">
+        @foreach (var item in ProductList.Items)
+        {
+            <!-- Product Card -->
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card shadow-sm border-0 rounded-3 transform-card" style="transition: transform 0.3s ease-in-out;">
+                    <!-- Carousel لعرض الصور المتعددة -->
+                    <div id="@item.Id" class="carousel slide" data-bs-ride="carousel" style="border-radius: 10px; overflow: hidden;">
+                        <div class="carousel-inner">
+                            @if (item.Images != null && item.Images.Any())
+                            {
+                                @foreach (var image in item.Images.Select((value, index) => new { value, index }))
+                                {
+                                    <div class="carousel-item @(image.index == 0 ? "active" : "")">
+                                        <img src="@image.value.ImageUrL" class="d-block w-100 carousel-image" alt="Product Image" style="height: 300px; object-fit: cover; transition: transform 0.5s ease-in-out;">
+
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="carousel-item active">
+                                    <img src="NoImage.png" class="d-block w-100  carousel-image" alt="Product Image" style="height: 300px; object-fit: cover; transition: transform 0.5s ease-in-out;">
+                                </div>
+                            }
+                        </div>
+
+
+                        <!-- أزرار التنقل للكاروسيل -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#@item.Id" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1); background-color: rgba(169, 169, 169, 0.7);"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#@item.Id" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1); background-color: rgba(169, 169, 169, 0.7);"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@item.Name</h5>
+                        <p class="card-text text-center">$@item.ProductUnits.Price</p>
+                        <button class="btn btn-primary btn-sm w-100 btn-hover-effect" style="transition: background-color 0.3s ease-in-out; " @onclick="() => AddToCart(item)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@*    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in.</p>
+        <button class="btn btn-primary" @onclick="RedirectToLogin">Login</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+ *@
+

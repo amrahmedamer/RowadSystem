@@ -1,0 +1,48 @@
+﻿@page "/admin/roles/create"
+
+@* 
+<EditForm Model="newRole" OnValidSubmit="CreateRole">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">اسم الدور</label>
+        <InputText class="form-control" @bind-Value="newRole.Role" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">الصلاحيات</label>
+        <InputSelect @bind-Value="newRole.Permissions" multiple class="form-control">
+            @foreach (var permission in allPermissions)
+            {
+                <option value="@permission">@permission</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">إضافة الدور</button>
+</EditForm>
+
+
+
+  *@
+
+<Modal @ref="modal" ModalId="_newRole" Title="Add New Role">
+    <BodyContent>
+        <EditForm Model="@newRole" OnValidSubmit="AddRole" id="_newRoleForm">
+            <FluentValidationValidator />
+
+            <div class="mb-3">
+                <label class="form-label">اسم الدور</label>
+                <InputText class="form-control" @bind-Value="newRole.Role" />
+            </div>
+
+        </EditForm>
+    </BodyContent>
+    <FooterContent>
+        <button class="btn btn-outline-secondary" @onclick="CloseModal">Cancel</button>
+        <button type="submit" class="btn btn-primary" form="_newRoleForm">Save</button>
+    </FooterContent>
+
+</Modal>
+

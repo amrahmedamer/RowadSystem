@@ -1,0 +1,8 @@
+﻿@page "/wallet"
+
+<h3>Wallet Payment</h3>
+<input @bind="msisdn" placeholder="01XXXXXXXXX" />
+<button @onclick="StartWallet">Pay @CheckoutResponse.TotalAmount EGP via Wallet</button>
+
+
+

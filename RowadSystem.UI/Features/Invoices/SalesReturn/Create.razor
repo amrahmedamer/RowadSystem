@@ -1,0 +1,234 @@
+﻿@page "/SalesReturn"
+@using Blazored.FluentValidation;
+@using Microsoft.AspNetCore.Components;
+@using RowadSystem.Shard.Contract.Invoices;
+@using RowadSystem.Shard.Contract.Products;
+@using RowadSystem.Shard.Contract.Payments;
+@using RowadSystem.Shard.consts.Enums;
+
+<EditForm Model="invoiceReturn" OnValidSubmit="HandleValidSubmit">
+    <FluentValidationValidator />
+
+    <div class="container mt-4">
+
+        <!-- Header -->
+        <div class="card shadow-lg border-0 mb-4 rounded-3 hover-shadow">
+            <div class="card-header bg-danger text-white text-center py-4">
+                <h4 class="mb-0 text-white">🔄 Return Sales Invoice</h4>
+            </div>
+        </div>
+
+        <!-- Invoice Info -->
+        <div class="row mb-4">
+            <!-- Search by Invoice Number -->
+            <div class="col-md-4">
+                <label class="form-label text-dark">Search by Invoice Number</label>
+                <InputText @bind-Value="_invoiceNumber" class="form-control form-control-lg shadow-sm" @oninput="@(e => SearchByInvoiceNumber(e))" placeholder="Enter Invoice Number" />
+                @* <ValidationMessage For="@(() => invoiceReturn.InvoiceNumber)" /> *@
+
+                @if (isLoading)
+                {
+                    <div class="spinner-border text-primary mt-2" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">Customer</label>
+                <InputSelect @bind-Value="invoiceReturn.CustomerId" class="form-control shadow-sm form-control-lg" disabled>
+                    <option value="@_customerResponse.Id">@_customerResponse.Name</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => invoiceReturn.CustomerId)" />
+
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-dark">Notes</label>
+                <InputTextArea @bind-Value="invoiceReturn.Notes" class="form-control shadow-sm" rows="1" placeholder="Enter notes for the invoice" />
+                <ValidationMessage For="() => invoiceReturn.Notes" />
+            </div>
+
+        </div>
+
+        <!-- Barcode Search -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <label class="form-label text-dark">Search by Barcode</label>
+                <InputText @bind-Value="_barcode" class="form-control form-control-lg shadow-sm" @oninput="@(e => SearchProductByBarcode(e))" placeholder="Enter Product Barcode" />
+                @* <ValidationMessage For="@(() => invoiceReturn.Barcode)" /> *@
+
+                @if (isLoading)
+                {
+                    <div class="spinner-border text-primary mt-2" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        @if (_invoiceItemResponse != null)
+        {
+            <div class="card shadow-sm border-0 mb-4 rounded-3 hover-shadow">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <strong>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box" viewBox="0 0 16 16">
+                            <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464z" />
+                        </svg>
+                        <span class="fs-6 ps-1 fw-bold">Product Information</span>
+
+                    </strong>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-muted">Product Name</label>
+                            <div class="border p-3 rounded-3 bg-light">
+                                <p class="m-0">@_invoiceItemResponse.ProductName</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-muted">Status</label>
+                            <div class="border p-3 rounded-3 bg-light">
+                                <p class="m-0">@_invoiceItemResponse.Status</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-muted">Unit</label>
+                            <select @bind="@_salesReturnItemRequest.UnitId" class="form-select form-control-lg shadow-sm" aria-label="Select Unit">
+                                @foreach (var unit in _unitResponses)
+                                {
+                                    <option value="@unit.Id">@unit.Name</option>
+                                }
+                            </select>
+                            <ValidationMessage For="@(() => _salesReturnItemRequest.UnitId)" />
+
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted">Return Quantity</label>
+                            <InputNumber @bind-Value="_salesReturnItemRequest.Quantity" class="form-control form-control-lg shadow-sm" placeholder="Enter Quantity to Return" />
+                            <ValidationMessage For="@(() => _salesReturnItemRequest.Quantity)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Items Table for Return -->
+        <div class="card shadow-sm border-0 mb-4 rounded-3 hover-shadow">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <strong>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart-check" viewBox="0 0 16 16">
+                        <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z" />
+                        <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zm3.915 10L3.102 4h10.796l-1.313 7zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                    </svg>
+                    <span class="fs-6 ps-1 fw-bold">Returned Items</span>
+
+                </strong>
+                <button type="button" class="btn btn-sm btn-outline-primary shadow-sm" @onclick="AddItem">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+                    </svg>
+                    Add Item
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-bordered mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ProductName</th>
+                            <th>UnitName</th>
+                            <th>Qty Returned</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in invoiceReturn.Items)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.UnitName</td>
+                                <td>@item.Quantity</td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-danger" type="button" @onclick="() => RemoveItem(item)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payments Section for Return -->
+        <div class="card shadow-sm border-0 mb-4 rounded-3 hover-shadow">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <strong>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-credit-card-2-back " viewBox="0 0 16 16">
+                        <path d="M11 5.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5z" />
+                        <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm13 2v5H1V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1m-1 9H2a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1" />
+                    </svg>
+                    <span class="fs-6 ps-1 fw-bold">Payments</span>
+                </strong>
+                <button type="button" class="btn btn-sm btn-outline-primary shadow-sm" @onclick="AddPayment" disabled="@((invoiceReturn.Payments.Count >= 3))">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+                    </svg>
+                    Add Refund Payment
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <div class="d-flex justify-content-between mb-2">
+                    <div style="width: 30%">Payment Method</div>
+                    <div style="width: 30%">Amount</div>
+                    <div style="width: 10%">Action</div>
+                </div>
+                @foreach (var payment in invoiceReturn.Payments)
+                {
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <select @bind="payment.Method" class="form-select shadow-sm" style="width: 30%">
+                            @foreach (var method in Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>())
+                            {
+                                <option value="@method">@method</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => payment.Method)" />
+
+                        <InputNumber @bind-Value="payment.Amount" class="form-control shadow-sm" placeholder="Enter Refund Amount" style="width: 30%" />
+                        <ValidationMessage For="@(() => payment.Amount)" />
+                        <button class="btn btn-sm btn-outline-danger shadow-sm" type="button" @onclick="() => RemovePayment(payment)" style="width: 10%">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                            </svg>
+                            Remove
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-3">
+            <button type="submit" disabled="@isSaving" class="btn btn-lg btn-danger px-5 shadow-lg hover-shadow-lg transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                </svg> Process Return
+            </button>
+        </div>
+
+    </div>
+</EditForm>
+
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-2">
+        <strong>Error!</strong> @errorMessage
+    </div>
+}

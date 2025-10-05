@@ -1,0 +1,25 @@
+﻿<div class="alert alert-info">
+    <p>تم اختيار الدفع عند الاستلام. تأكد من عنوانك عند استلام المنتج.</p>
+   @*  <EditForm Model="@_orderRequest" OnValidSubmit="HandleOrderConfirmation">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+ *@
+
+        <div class="alert alert-info">
+            <h5>الدفع عند الاستلام</h5>
+            <p>سيتم الدفع عند استلام المنتج من الكاشير في العنوان الذي قمت بإدخاله.</p>
+            <p><strong>تأكد من صحة عنوانك للتوصيل السريع.</strong></p>
+        </div>
+
+     
+
+        <!-- رسالة تحفيزية أو توجيهية للمستخدم -->
+        <div class="alert alert-warning mt-4">
+            <p><strong>ملاحظة:</strong> في حالة الدفع عند الاستلام، تأكد من توفر المبلغ عند استلام المنتج لتسريع العملية.</p>
+        </div>
+
+
+        <button class="btn btn-success" @onclick="HandleOrderConfirmation">تأكيد الطلب</button>
+    @* </EditForm> *@
+</div>
+

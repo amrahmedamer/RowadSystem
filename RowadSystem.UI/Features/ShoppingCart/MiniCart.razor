@@ -1,0 +1,145 @@
+﻿@using Blazored.Modal.Services
+@* @page "/shopping-cart"
+
+<!-- زر لفتح الموديل باستخدام bootstrap -->
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cartmodal">
+    فتح عربة التسوق
+</button>
+ 
+<!-- موديل باستخدام bootstrap -->
+<div class="modal fade" id="cartmodal" tabindex="-1" aria-labelledby="cartmodallabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cartmodallabel">عربة التسوق</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li>منتج 1</li>
+                    <li>منتج 2</li>
+                    <li>منتج 3</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>  *@
+
+
+@* <!-- مودال Bootstrap -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">تأكيد العملية</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>هل تريد تأكيد العملية؟</p>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" @onclick="CloseModal">إلغاء</button>
+                <button class="btn btn-primary" @onclick="ConfirmAction">تأكيد</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] IJSRuntime JS { get; set; }
+
+    private async Task OpenModal()
+    {
+        // فتح المودال
+        await JS.InvokeVoidAsync("bootstrapModal.show", "#myModal");
+    }
+
+    private async Task CloseModal()
+    {
+        // إغلاق المودال
+        await JS.InvokeVoidAsync("bootstrapModal.hide", "#myModal");
+    }
+
+    private void ConfirmAction()
+    {
+        // إتمام العملية بعد التأكيد
+        Console.WriteLine("تم التأكيد ✅");
+        CloseModal(); // إغلاق المودال بعد التأكيد
+    }
+} *@
+
+@page "/shopping-cart"
+
+
+<div class="container py-4">
+    <h2 class="mb-4">Your Shopping Cart</h2>
+
+    <!-- عرض المنتجات في السلة -->
+    @foreach (var item in cartItems)
+    {
+        <div class="cart-item d-flex justify-content-between align-items-center border-bottom py-3">
+            <div class="d-flex align-items-center">
+                <img src="@item.ImageUrl" alt="Product Image" class="img-fluid" style="width: 100px; height: 100px; object-fit: cover;">
+                <div class="ms-3">
+                    <h5>@item.ProductName</h5>
+                    <p class="text-muted">Category: Electronics</p>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <input type="number" class="form-control quantity"  @bind="@item.Quantity" min="1" style="width: 80px;">
+                <span class="ms-2">$@item.Price</span>
+                <button class="btn btn-danger btn-sm ms-3" @onclick="() => RemoveItem(item)">Remove</button>
+            </div>
+        </div>
+    }
+
+    <!-- الإجمالي الكلي -->
+    <div class="d-flex justify-content-between mt-4">
+        <div class="total-price">
+            <h4>Total: $200</h4>
+        </div>
+        <a href="/checkout" class="btn btn-success">Proceed to Checkout</a>
+    </div>
+</div>
+
+@code {
+
+    // تعريف قائمة المنتجات في السلة
+    List<CartItem> cartItems = new List<CartItem>
+    {
+        new CartItem { ProductName = "Product 1", Price = 20.00, Quantity = 1, ImageUrl = "https://res.cloudinary.com/dqdwc0uem/image/upload/v1755330114/product/product/0781a3ec-70d4-4e16-8164-901ba67e01dd.jpg" },
+        new CartItem { ProductName = "Product 2", Price = 40.00, Quantity = 2, ImageUrl = "https://res.cloudinary.com/dqdwc0uem/image/upload/v1755330114/product/product/0781a3ec-70d4-4e16-8164-901ba67e01dd.jpg" }
+    };
+
+    // // حساب الإجمالي الكلي
+    // double totalAmount = cartItems.Sum(item => item.Quantity * item.Price);
+    // تعريف كلاس CartItem لتمثيل المنتجات في السلة
+    public class CartItem
+    {
+        public string ProductName { get; set; }
+        public double Price { get; set; }
+        public int Quantity { get; set; }
+        public string ImageUrl { get; set; }
+    }
+
+    // تحديث الإجمالي عند تعديل الكمية
+    private void UpdateTotal()
+    {
+       // totalAmount = cartItems.Sum(item => item.Quantity * item.Price);
+    }
+
+    // إزالة المنتج من السلة
+    private void RemoveItem(CartItem item)
+    {
+      // cartItems.Remove(item);
+        UpdateTotal();
+    }
+}

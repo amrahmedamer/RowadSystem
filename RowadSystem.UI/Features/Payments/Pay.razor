@@ -1,0 +1,67 @@
+﻿
+
+@* @page "/pay"
+@if (iframeUrl is null)
+{
+	<button @onclick="Start">Pay 100 EGP</button>
+}
+else
+{
+	<iframe src="@iframeUrl" width="100%" height="720" frameborder="0"></iframe>
+}
+
+ *@
+
+@page "/pay"
+@using Microsoft.AspNetCore.Components.Forms
+@inject IJSRuntime JSRuntime
+
+<h3 class="text-center my-4">الدفع عبر بطاقة ائتمانية</h3>
+
+@if (iframeUrl is null)
+{
+    <EditForm Model="@paymentData" OnValidSubmit="Start">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="card shadow-sm p-4">
+            <div class="form-group mb-3">
+                <label for="firstName" class="form-label">الاسم الأول:</label>
+                <InputText id="firstName" @bind-Value="paymentData.FirstName" class="form-control" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="lastName" class="form-label">الاسم الأخير:</label>
+                <InputText id="lastName" @bind-Value="paymentData.LastName" class="form-control" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="email" class="form-label">البريد الإلكتروني:</label>
+                <InputText id="email" @bind-Value="paymentData.Email" class="form-control" type="email" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="city" class="form-label">المدينة:</label>
+                <InputText id="city" @bind-Value="paymentData.City" class="form-control" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="country" class="form-label">الدولة:</label>
+                <InputText id="country" @bind-Value="paymentData.Country" class="form-control" required />
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary btn-lg w-100" type="submit">
+                    <span> @CheckoutResponse.TotalAmount EGP</span>
+                </button>
+            </div>
+        </div>
+    </EditForm>
+}
+else
+{
+    <div class="iframe-container my-4">
+        <iframe src="@iframeUrl" width="100%" height="720" frameborder="0" class="rounded shadow"></iframe>
+    </div>
+}
+

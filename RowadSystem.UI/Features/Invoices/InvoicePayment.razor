@@ -1,0 +1,28 @@
+﻿@* @page "/invoice-payment/{invoiceId:int}" *@
+
+<PageTitle>Add Payment</PageTitle>
+
+<Modal @ref="modal" ModalId="_newPayment" Title="Add New Payment">
+    <BodyContent>
+        <EditForm Model="@newPayment" OnValidSubmit="HandleAddPayment" id="FormModal">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label for="method" class="form-label">Payment Method</label>
+                    <select @bind="newPayment.Method" class="form-select shadow-sm" style="width: 100%">
+                        @foreach (var method in Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>())
+                        {
+                            <option value="@method">@method</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Total </label>
+                    <InputNumber id="amount" class="form-control" @bind-Value="newPayment.Amount" />
+                </div>
+
+            </EditForm>
+    </BodyContent>
+</Modal>

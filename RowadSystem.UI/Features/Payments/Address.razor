@@ -1,0 +1,61 @@
+﻿@page "/checkout-address"
+
+<!-- Address Section -->
+<EditForm Model="_orderRequest" OnValidSubmit="ProcessCheckoutAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-4 mt-5">
+        <h6 class="fw-bold text-secondary">Address</h6>
+        <div class="row g-3">
+            <div class="col-md-4 col-12">
+                <select @bind="_orderRequest.Address.GovernorateId" class="form-select shadow-sm" aria-label="Select Governorate" @oninput="@(e => OnGovernorateChanged(e))">
+                    <option value="0" >Select Governorate</option>
+                    @foreach (var governrate in _governrateResponse)
+                    {
+                        <option value="@governrate.Id">@governrate.Name</option>
+                    }
+                </select>
+                <ValidationMessage For="@(() => _orderRequest.Address.GovernorateId)" class="text-danger fs-6" />
+            </div>
+
+            <div class="col-md-4 col-12">
+                <select @bind="_orderRequest.Address.CityId" class="form-select shadow-sm" aria-label="Select City" @oninput="@(e => OnGovernorateChanged(e))">
+                    <option value="0" >Select City</option>
+                    @foreach (var cities in _citiesResponse)
+                    {
+                        <option value="@cities.Id">@cities.Name</option>
+                    }
+                </select>
+                <ValidationMessage For="@(() => _orderRequest.Address.CityId)" class="text-danger fs-6" />
+            </div>
+
+            <div class="col-md-4 col-12">
+                <InputText @bind-Value="_orderRequest.Address.Street" class="form-control shadow-sm" placeholder="Street" />
+                <ValidationMessage For="@(() => _orderRequest.Address.Street)" class="text-danger fs-6" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <InputText @bind-Value="_orderRequest.Address.AddressDetails" class="form-control shadow-sm mt-2" placeholder="Address Details" />
+            <ValidationMessage For="@(() => _orderRequest.Address.AddressDetails)" class="text-danger fs-6" />
+        </div>
+    </div>
+
+    <!-- Phone Section Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h6 class="fw-bold text-secondary mb-0">Phone Number</h6>
+    </div>
+
+    <div class="mb-3">
+        <InputText @bind-Value="_orderRequest.PhoneNumbers.Number" class="form-control shadow-sm" placeholder="Enter Phone Number" />
+        <ValidationMessage For="@(() => _orderRequest.PhoneNumbers.Number)" class="text-danger fs-6" />
+    </div>
+
+    <!-- Checkout Button -->
+    <div class="text-center mt-4">
+        <button class="btn btn-lg btn-success" type="submit">
+            <i class="bi bi-check-circle"></i> Complete Order
+        </button>
+    </div>
+</EditForm>

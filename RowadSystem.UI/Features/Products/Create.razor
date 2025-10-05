@@ -1,0 +1,231 @@
+﻿
+@page "/Create"
+@using Blazored.FluentValidation
+<PageTitle>Product</PageTitle>
+<EditForm Model="@ProductRequest" OnValidSubmit="HandleValidSubmit" >
+    <FluentValidationValidator />
+
+    <div class="container mt-4">
+
+        <!-- Title Card -->
+        <div class="card shadow mb-4 border-0">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0">🛒 Add New Product</h4>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-header bg-light">
+                <strong>📸 Upload Product Images</strong>
+            </div>
+            <div class="card-body">
+                <InputFile  OnChange="HandleSelectedImages" multiple class="form-control" />
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div class="alert alert-danger mt-3">
+                        @ErrorMessage
+                    </div>
+                }
+                <div class="d-flex flex-wrap mt-3">
+                    @foreach (var preview in imagePreviews.Select((src, index) => new { src, index }))
+                    {
+                        <div class="position-relative m-2" style="width: 130px; height: 130px;">
+                            <img src="@preview.src" class="rounded shadow-sm w-100 h-100" style="object-fit: cover; border: 1px solid #dee2e6;" />
+
+                            <button type="button"
+                                    class="btn btn-sm btn-danger position-absolute"
+                                    style="top: 5px; right: 5px; border-radius: 50%; padding: 0.25rem 0.5rem;"
+                                    @onclick="() => RemoveImage(preview.index)">
+                                &times;
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-header bg-light">
+                <strong>📝 Basic Product Info</strong>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Name</label>
+                        <InputText @bind-Value="@ProductRequest.Name" class="form-control" />
+                        <ValidationMessage For="@(() => ProductRequest.Name)" />
+                    </div>
+                   @*  <div class="col-md-6">
+                        <label class="form-label fw-semibold">Purchase Price</label>
+                        <InputNumber @bind-Value="@ProductRequest.PurchasePrice" class="form-control" />
+                        <ValidationMessage For="@(() => ProductRequest.PurchasePrice)" />
+
+                    </div> *@
+                  
+                 @*    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Quantity</label>
+                        <InputNumber @bind-Value="@ProductRequest.Quantity" class="form-control" />
+                        <ValidationMessage For="@(() => ProductRequest.Quantity)" />
+
+                    </div> *@
+                  @*   <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark">Supplier</label>
+                        <RadzenDropDown @bind-Value="ProductRequest.SupplierId"
+                                        Data="_supplierResponses"
+                                        TextProperty="Name"
+                                        ValueProperty="Id"
+                                        Placeholder="Select Supplier"
+                                        AllowClear="true"
+                                        Style="width:100%;"
+                                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                        AllowFiltering="true" />
+                    </div> *@
+                   @*  <div class="col-md-6">
+                        <label class="form-label fw-semibold">Supplier</label>
+                        <select @bind="ProductRequest.SupplierId" class="form-select">
+                            <option value="">Select Supplier</option>
+                            @foreach (var supplier in _supplierResponses)
+                            {
+                                <option value="@supplier.Id">@supplier.Name</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => ProductRequest.SupplierId)" />
+
+                    </div> *@
+                  @*   <div class="col-md-6">
+                        <label class="form-label fw-semibold">Category</label>
+                        <select @bind="ProductRequest.CategoryId" class="form-select">
+                            <option value="">Select Category</option>
+                            @foreach (var category in _categoryResponses)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => ProductRequest.CategoryId)" />
+
+                    </div> *@
+
+                     <div class="col-md-6 ">
+                          <label class="form-label fw-semibold "> Category</label>
+                        <RadzenDropDown @bind-Value="ProductRequest.CategoryId"
+                                        Data="_categoryResponses"
+                                TextProperty="Name"
+                                ValueProperty="Id"
+                                Placeholder="Select Category"
+                                AllowClear="true"
+                                Style="width:100%;"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                AllowFiltering="true" />
+                        <ValidationMessage For="@(() => ProductRequest.CategoryId)" />
+                        </div>
+                     <div class="col-md-6 ">
+                        <label class="form-label fw-semibold ">Brand</label>
+                        <RadzenDropDown @bind-Value="ProductRequest.BrandId"
+                                        Data="_brandResponses"
+                                TextProperty="Name"
+                                ValueProperty="Id"
+                                        Placeholder="Select Brand"
+                                AllowClear="true"
+                                Style="width:100%;"
+                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                AllowFiltering="true" />
+                        <ValidationMessage For="@(() => ProductRequest.BrandId)" />
+
+                        </div>
+                  @*   <div class="col-md-6">
+                        <label class="form-label fw-semibold">Brand</label>
+                        <select @bind="ProductRequest.BrandId" class="form-select">
+                            <option value="">Select Brand</option>
+                            @foreach (var brand in _brandResponses)
+                            {
+                                <option value="@brand.Id">@brand.Name</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => ProductRequest.BrandId)" />
+
+                    </div> *@
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Barcode</label>
+                        <InputText @bind-Value="@ProductRequest.Barcode" class="form-control" rows="3" />
+                        <ValidationMessage For="@(() => ProductRequest.Barcode)" />
+
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold">Description</label>
+                        <InputTextArea @bind-Value="@ProductRequest.Description" class="form-control" rows="3" />
+                        <ValidationMessage For="@(() => ProductRequest.Description)" />
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Units Section -->
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <strong>📦 Units & Pricing</strong>
+                <button type="button" class="btn btn-sm btn-outline-success" @onclick="AddUnit">
+                    ➕ Add Unit
+                </button>
+            </div>
+            <div class="card-body">
+                @for (int i = 0; i < ProductRequest.UnitsWithConversion.Count; i++)
+                {
+                    var index = i;
+                    var unit = ProductRequest.UnitsWithConversion[i];
+
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-4">
+                                    <label class="form-label">Unit</label>
+                                    <select @bind="unit.UnitId" class="form-select">
+                                        <option value="">Select Unit</option>
+                                        @foreach (var item in _unitResponses)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Base Unit?</label>
+                                    <div class="form-check mt-1">
+                                        <InputCheckbox @bind-Value="unit.IsBaseUnit" class="form-check-input" />
+                                        <label class="form-check-label ms-2">Yes</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Qty In Base Unit</label>
+                                    <InputNumber @bind-Value="unit.QuantityInBaseUnit" class="form-control" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Selling Price</label>
+                                    <InputNumber @bind-Value="unit.SellingPrice" class="form-control" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2" @onclick="@(() => RemoveUnit(index))">
+                                        ❌ Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-lg btn-primary px-5" >
+                🚀 Submit Product
+            </button>
+        </div>
+
+
+    </div>
+</EditForm>

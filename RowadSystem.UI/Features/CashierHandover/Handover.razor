@@ -1,0 +1,61 @@
+﻿@* @page "/handover"
+
+<h3>تسليم الورديّة</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <EditForm Context="formContext" Model="@handoverDTO" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label for="amountInDrawer" class="form-label">المبلغ في الصندوق</label>
+                <InputNumber id="amountInDrawer" class="form-control" @bind-Value="handoverDTO.AmountInDrawer" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">تسليم الورديّة</button>
+        </EditForm>
+    </Authorized>
+
+    <NotAuthorized>
+        <div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center px-3">
+            <img src="/ErrorImages/401-Unauthorized.png" alt="Access Denied"
+                 class="img-fluid mb-4"
+                 style="max-width: 50%; height: auto; min-width: 200px;">
+            <h3 class="text-danger mb-3">You are not authorized. Please login.</h3>
+            <NavLink href="/login" class="btn btn-primary btn-lg">Login</NavLink>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+ *@
+
+@page "/handover"
+
+<h3 class="text-center text-primary mb-4">Cashier Handover</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <EditForm Context="formContext" Model="@handoverDTO" OnValidSubmit="HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-4">
+                <label for="amountInDrawer" class="form-label fw-semibold">Amount in Drawer</label>
+                <InputNumber id="amountInDrawer" class="form-control" @bind-Value="handoverDTO.AmountInDrawer" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                <i class="bi bi-arrow-right-circle me-2"></i> Submit Handover
+            </button>
+        </EditForm>
+    </Authorized>
+
+    <NotAuthorized>
+        <div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center px-3">
+            <img src="/ErrorImages/401-Unauthorized.png" alt="Access Denied"
+                 class="img-fluid mb-4" style="max-width: 50%; height: auto; min-width: 200px;">
+            <h3 class="text-danger mb-3">You are not authorized. Please login.</h3>
+            <NavLink href="/login" class="btn btn-primary btn-lg w-100 py-2 fw-bold">Login</NavLink>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

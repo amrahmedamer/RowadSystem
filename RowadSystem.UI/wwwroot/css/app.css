@@ -1,0 +1,447 @@
+
+
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: #e1e6ea !important;
+}
+
+h1:focus {
+    outline: none;
+}
+
+a, .btn-link {
+    color: #0071c1;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.content {
+    padding-top: 1.1rem;
+}
+
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+.invalid {
+    outline: 1px solid red;
+}
+
+.validation-message {
+    color: red;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.blazor-error-boundary {
+    background: url(data:image/svg+xml;base64,...) no-repeat 1rem/1.8rem, #b32121;
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+}
+
+    .blazor-error-boundary::after {
+        content: "An error has occurred."
+    }
+
+.loading-progress {
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    margin: 20vh auto 1rem auto;
+}
+
+    .loading-progress circle {
+        fill: none;
+        stroke: #e0e0e0;
+        stroke-width: 0.6rem;
+        transform-origin: 50% 50%;
+        transform: rotate(-90deg);
+    }
+
+        .loading-progress circle:last-child {
+            stroke: #1b6ec2;
+            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+            transition: stroke-dasharray 0.05s ease-in-out;
+        }
+
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+    .loading-progress-text:after {
+        content: var(--blazor-load-percentage-text, "Loading");
+    }
+
+code {
+    color: #c02d76;
+}
+
+.rounded-custom {
+    border-radius: 0.50rem !important;
+}
+
+.rounded-custom {
+    border-radius: 1rem !important;
+}
+
+.section-header {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.transform-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn-hover-effect:hover {
+    background-color: #0056b3 !important;
+    transform: scale(1.1);
+}
+
+.carousel-image:hover {
+    transform: scale(1.1);
+}
+
+.carousel-control-prev, .carousel-control-next {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.transform-card:hover .carousel-control-prev,
+.transform-card:hover .carousel-control-next {
+    opacity: 1;
+}
+
+/* تخصيص شريط البحث */
+.search-input {
+    width: 100%; /* توسيع العرض ليكون مرن */
+    max-width: 500px; /* تحديد أقصى عرض */
+    padding-left: 30px; /* مساحة على اليسار */
+    padding-right: 50px; /* مساحة للزر مع زيادة للمساحة */
+    border-radius: 25px; /* حواف دائرية */
+    background-color: #fff; /* لون الخلفية */
+    border: 1px solid #ddd; /* الحدود */
+    transition: all 0.3s ease;
+    font-size: 16px; /* حجم خط مناسب */
+    height: 45px; /* ارتفاع مناسب */
+}
+
+.search-input:focus {
+    width: 500px; /* توسيع العرض بشكل أكبر عند التركيز */
+    max-width: 600px; /* الحد الأقصى عند التركيز */
+    border-color: #007bff; /* تغيير اللون عند التركيز */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* تأثير الظل عند التركيز */
+}
+
+/* تخصيص الزر داخل شريط البحث */
+.search-input + .btn {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 50%;
+    padding: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+    .search-input + .btn:hover {
+        background-color: #0056b3;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+
+
+
+
+
+
+.search-input {
+    padding-left: 35px; /* مساحة للأيقونة داخل الحقل */
+    border-radius: 25px; /* حواف مدورة للحقل */
+    transition: all 0.3s ease; /* تأثير الانتقال */
+    background-color: #f7f7f7; /* خلفية الحقل */
+}
+
+/* تنسيق الأيقونة */
+.bi-search {
+    position: absolute; /* تحديد موقع الأيقونة داخل الحقل */
+    left: 10px; /* المسافة من الحافة اليسرى */
+    top: 50%;
+    transform: translateY(-50%); /* لضبط الأيقونة بشكل عمودي */
+    fill: #007bff; /* لون الأيقونة */
+    
+}
+/* تأثير عند التفاعل مع الحقل */
+.search-input:focus {
+    border-color: #007bff; /* لون الحدود عند التركيز */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* تأثير الظل عند التركيز */
+}
+
+/* تأثير عند التمرير على الحقل */
+.search-input:hover {
+    border-color: #0056b3; /* تغيير لون الحدود عند التمرير */
+}
+
+/* تأثير placeholder */
+.search-input::placeholder {
+    color: #888; /* لون النص في الـ placeholder */
+    font-size: 14px; /* حجم النص */
+}
+
+
+@media (min-width: 641px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    .collapse {
+        display: block;
+    }
+
+    .nav-scrollable {
+        height: calc(100vh - 4rem);
+        overflow-y: auto;
+    }
+}
+
+
+
+
+
+
+
+
+/* Styling for Profile Page */
+/*.profile-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: 50px auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+    object-fit: cover;
+    border: 4px solid #00bcd4;
+}
+
+.profile-details h3 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.profile-details p {
+    font-size: 1rem;
+    color: #666;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+    .profile-actions .btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .profile-actions .btn:hover {
+            transform: scale(1.05);
+        }*/
+
+/* Button Styles */
+/*.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }*/
+
+
+
+/* مظهر الأيقونة */
+/*.profile-icon {
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    color: #007bff;
+    cursor: pointer;
+}*/
+
+/* تخصيص الـ Dropdown */
+/*.profile-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    z-index: 1000;
+}
+
+.dropdown-item {
+    padding: 12px;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+}
+
+    .dropdown-item:hover {
+        background-color: #f1f1f1;
+    }
+
+.dropdown-divider {
+    margin: 5px 0;
+    border-top: 1px solid #ddd;
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+ تخصيص مظهر الـ Dropdown 
+.dropdown-menu {
+    border-radius: 8px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+ تخصيص شكل الروابط في الدروب داون 
+.menu-item a {
+    font-size: 1rem;
+    padding: 12px;
+}
+
+    .menu-item a:hover {
+        background-color: #f1f1f1;
+        color: #007bff;
+    }
+
+ تغيير شكل الأيقونة 
+.symbol img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+
+.badge-active {
+    background-color: #e2f3e0; 
+    color: #3a5f32;  
+}
+
+.badge-inactive {
+    background-color: #f8d7da;  
+    color: #721c24;  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,62 @@
+﻿@page "/order-confirmation"
+
+<div class="container my-5">
+    <!-- Header with a clean design -->
+    <h2 class="text-center mb-4 text-success">Order Successfully Completed!</h2>
+
+    <!-- Order Details -->
+    <div class="mb-4">
+        <p class="fs-5">Order ID: <strong>#@orderDetails.Id</strong></p>
+        <p class="fs-5"><strong>Order Date:</strong> @orderDetails.OrderDate.ToString("yyyy-MM-dd HH:mm:ss")</p>
+    </div>
+
+    <!-- Address Section with icon and card design -->
+    <div class="mb-4">
+        <h4 class="d-flex align-items-center">
+            <i class="bi bi-geo-alt-fill me-2"></i> <strong>Address Details:</strong>
+        </h4>
+        <div class="card p-3 shadow-sm">
+            <p><strong>Governorate:</strong> @orderDetails.Address.GovernorateName</p>
+            <p><strong>City:</strong> @orderDetails.Address.CityName</p>
+            <p><strong>Street:</strong> @orderDetails.Address.Street</p>
+            <p><strong>Address Details:</strong> @orderDetails.Address.AddressDetails</p>
+        </div>
+    </div>
+
+    <!-- Product Details Section with cards -->
+    <div class="mb-4">
+        <h4 class="d-flex align-items-center">
+            <i class="bi bi-box-seam me-2"></i> <strong>Product Details:</strong>
+        </h4>
+        <div class="list-group">
+            @foreach (var item in orderDetails.OrderItems)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>@item.ProductName</strong><br />
+                        @item.Quantity x @item.Price EGP
+                    </div>
+                    <span class="badge bg-primary rounded-pill">@item.Total EGP</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Total Amount -->
+    <div class="mb-4">
+        <h4 class="text-end">Total Amount: <strong>@orderDetails.TotalAmount EGP</strong></h4>
+    </div>
+
+    <!-- Payment method -->
+    <div class="alert alert-info">
+        You have chosen Cash on Delivery. The amount will be collected upon delivery.
+    </div>
+
+    <!-- Call to action button with animation -->
+    <div class="text-center mt-4">
+        <button class="btn btn-lg btn-primary" @onclick="GoToHome" style="transition: all 0.3s ease;">
+            Return to Home Page
+        </button>
+    </div>
+</div>
+

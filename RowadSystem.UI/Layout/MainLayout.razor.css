@@ -1,0 +1,120 @@
+
+body {
+    padding-top: 100px;
+}
+
+/* Custom navbar with gradient background */
+.custom-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    z-index: 1030;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    transition: all 0.3s ease-in-out; /* Smooth transition */
+}
+
+    /* Navbar links */
+    .custom-navbar .nav-link {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem; /* Slightly rounded corners */
+        color: #ffffff; /* White text */
+        position: relative; /* Positioning for the underline */
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition for hover */
+    }
+
+        /* Line under the link on hover */
+        .custom-navbar .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #ffffff; /* White color for the line */
+            transition: width 0.3s ease; /* Smooth width transition */
+        }
+
+        /* Navbar link hover effect */
+        .custom-navbar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Light hover effect */
+            transform: scale(1.05); /* Slight scale on hover */
+        }
+
+            /* Line expands on hover */
+            .custom-navbar .nav-link:hover::after {
+                width: 100%; /* Expand the line to full width */
+            }
+
+    /* Navbar toggler button */
+    .custom-navbar .navbar-toggler {
+        background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+        border-radius: 0.25rem; /* Rounded corners */
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+        /* Navbar toggler button hover effect */
+        .custom-navbar .navbar-toggler:hover {
+            background-color: rgba(255, 255, 255, 0.3); /* Lighter background on hover */
+        }
+
+/* Optional: Animation for navbar appearance */
+@keyframes slideIn {
+    from {
+        transform: translateY(-100%); /* Starts above the screen */
+    }
+
+    to {
+        transform: translateY(0); /* Ends at normal position */
+    }
+}
+
+/* Apply slide-in animation to navbar */
+.custom-navbar {
+    animation: slideIn 0.5s ease-out;
+}
+
+
+
+
+/* Default Box Container Styling */
+.box-container {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+/* Sidebar Box Container */
+.sidebar.box-container {
+    background: linear-gradient(180deg, #ffffff, #f8f9fa);
+    color: #fff;
+    height: calc(100vh - 110px);
+    position: fixed;
+    top: 100px;
+    left: 1rem;
+    width: calc(16.666% - 1rem);
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.4) transparent; /* للفايرفوكس */
+    z-index: 101;
+    border-radius: .625rem;
+}
+
+
+    /* Box container card with a similar light gray background */
+    .sidebar.box-container .card {
+        background-color: rgba(169, 183, 193, 0.9); /* Using the same light gray background */
+        border: 1px solid rgba(169, 183, 193, 0.7);
+        border-radius: 1rem;
+        padding: 1rem;
+        transition: all 0.3s ease;
+    }
+
+
+

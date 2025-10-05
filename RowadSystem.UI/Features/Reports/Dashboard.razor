@@ -1,0 +1,1071 @@
+﻿@* 
+
+@page "/dashboard"
+@using Blazorise.Charts
+@using Radzen.Blazor
+@using RowadSystem.Shard.Contract.Reports
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">Dashboard</h2>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+    else if (todaySales is null || monthlySales is null || _topProductDtos is null || _lowStockProducts is null)
+    {
+        <div class="text-muted">Loading...</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            <!-- ✅ Today's Sales -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Today's Sales</span>
+                            <span class="badge bg-danger-subtle text-primary rounded-pill">
+                                @todaySales.Date.ToString("dd MMM yyyy")
+                            </span>
+                        </div>
+
+                        <h3 class="fw-bold text-dark mb-1">
+                            @($"{todaySales.TotalSales:N0} EG")
+
+                        </h3>
+                        <p class="mb-0 text-muted">
+                            Total Invoices:
+                            <span class="fw-semibold text-dark">@todaySales.TotalInvoices</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ Monthly Sales -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">This Month</span>
+                            <span class="badge bg-success-subtle text-success rounded-pill">
+                                @DateTime.Now.ToString("MMMM yyyy")
+                            </span>
+                        </div>
+
+                        <h3 class="fw-bold text-dark mb-1">
+                            @($"{monthlySales.TotalSales:N0} EG")
+                        </h3>
+                        <p class="mb-0 text-muted">
+                            Total Invoices:
+                            <span class="fw-semibold text-dark">@monthlySales.TotalInvoices</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ Top Products List -->
+            <div class="col-12 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Top Products</span>
+                            <span class="badge bg-info-subtle text-info rounded-pill">Best Sellers</span>
+                        </div>
+
+                        @if (_topProductDtos.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var product in _topProductDtos.Take(5))
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@product.ProductName</span>
+                                        <span class="fw-semibold text-dark">
+                                            @product.TotalQuantity ×
+                                            (@product.TotalSales.ToString("C0"))
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">No products sold yet.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ Low Stock Products -->
+            <div class="col-12 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Low Stock</span>
+                            <span class="badge bg-danger text-white rounded-pill">Alert</span>
+                        </div>
+
+                        @if (_lowStockProducts.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var product in _lowStockProducts)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@product.Name</span>
+                                        <span class="badge bg-danger">@product.Quantity</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-success mb-0">✅ All products in stock</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<RadzenDatePicker @bind-Value="_dateDto.StartDate"
+                  DateFormat="yyyy-MM-dd"
+                  Change="OnDateChanged" />
+
+<RadzenDatePicker @bind-Value="_dateDto.EndDate"
+                  DateFormat="yyyy-MM-dd"
+                  Change="OnDateChanged" />
+
+<RadzenChart Style="height:300px">
+    <RadzenLineSeries Data="@salesData" CategoryProperty="FormattedDate" ValueProperty="TotalSales" Title="Total Sales" />
+</RadzenChart>
+ *@
+
+
+
+@* 
+
+@page "/dashboard"
+@using System.Globalization
+@using Blazorise.Charts
+@using Radzen.Blazor
+@using RowadSystem.Shard.Contract.Reports
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">📊 Dashboard</h2>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+    else if (todaySales is null || monthlySales is null || _topProductDtos is null || _lowStockProducts is null)
+    {
+        <div class="text-muted">Loading...</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            <!-- ✅ Today's Sales -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Today's Sales</span>
+                            <span class="badge bg-danger-subtle text-primary rounded-pill">
+                                @todaySales.Date.ToString("dd MMM yyyy")
+                            </span>
+                        </div>
+
+                        <h3 class="fw-bold text-dark mb-1">
+                            @todaySales.TotalSales.ToString("C0", new CultureInfo("ar-EG"))
+                        </h3>
+                        <p class="mb-0 text-muted">
+                            Total Invoices:
+                            <span class="fw-semibold text-dark">@todaySales.TotalInvoices</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ Monthly Sales -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">This Month</span>
+                            <span class="badge bg-success-subtle text-success rounded-pill">
+                                @DateTime.Now.ToString("MMMM yyyy")
+                            </span>
+                        </div>
+
+                        <h3 class="fw-bold text-dark mb-1">
+                            @monthlySales.TotalSales.ToString("C0", new CultureInfo("ar-EG"))
+                        </h3>
+                        <p class="mb-0 text-muted">
+                            Total Invoices:
+                            <span class="fw-semibold text-dark">@monthlySales.TotalInvoices</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+          
+
+            <!-- ✅ Low Stock Products -->
+            <div class="col-12 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Low Stock</span>
+                            <span class="badge bg-danger text-white rounded-pill">Alert</span>
+                        </div>
+
+                        @if (_lowStockProducts.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var product in _lowStockProducts)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@product.Name</span>
+                                        <span class="badge bg-danger">@product.Quantity</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-success mb-0">✅ All products in stock</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="row g-3 my-4">
+    <!-- Sales Trend Card -->
+    <div class="col-8">
+        <div class="card shadow-sm border-0 rounded-3 p-3 ">
+            <div class="row align-items-center mb-3">
+                <!-- Chart Title -->
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-0">📈 Sales Trend</h5>
+                </div>
+
+                <!-- Date Filters (small & aligned right with proper spacing) -->
+                <div class="col-md-6 d-flex justify-content-md-end gap-2 mt-2 mt-md-0 pe-3 position-relative ">
+                    <RadzenDatePicker @bind-Value="_dateDto.StartDate"
+                                      DateFormat="yyyy-MM-dd"
+                                      Change="OnDateChanged"
+                                      Style="width:140px; font-size:0.85rem;"
+                                      class="form-control-sm" />
+
+                    <RadzenDatePicker @bind-Value="_dateDto.EndDate"
+                                      DateFormat="yyyy-MM-dd"
+                                      Change="OnDateChanged"
+                                      Style="width:140px; font-size:0.85rem;"
+                                      class="form-control-sm" />
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <RadzenChart Style="height:300px">
+                <RadzenLineSeries Data="@salesData"
+                                  CategoryProperty="FormattedDate"
+                                  ValueProperty="TotalSales"
+                                  Title="Total Sales" />
+            </RadzenChart>
+
+
+        </div>
+    </div>
+    <!-- ✅ Top Products List -->
+    <div class="col-12 col-lg-3">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-semibold text-muted">Top Products</span>
+                    <span class="badge bg-info-subtle text-info rounded-pill">Best Sellers</span>
+                </div>
+
+                @if (_topProductDtos.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var product in _topProductDtos.Take(5))
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@product.ProductName</span>
+                                <span class="fw-semibold text-dark">
+                                    @product.TotalQuantity ×
+                                    (@product.TotalSales.ToString("C0", new CultureInfo("ar-EG")))
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No products sold yet.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Orders-->
+
+
+<h3>📦 Orders Dashboard</h3>
+
+@if (_dashboardDto == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="row g-3 my-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 p-3">
+                <h6>Total Orders</h6>
+                <h4>@_dashboardDto.TotalOrders</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 p-3 text-warning">
+                <h6>Pending</h6>
+                <h4>@_dashboardDto.PendingOrders</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 p-3 text-success">
+                <h6>Completed</h6>
+                <h4>@_dashboardDto.CompletedOrders</h4>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 p-3 text-danger">
+                <h6>Cancelled</h6>
+                <h4>@_dashboardDto.CancelledOrders</h4>
+            </div>
+        </div>
+    </div>
+
+    <h5>🆕 Latest Orders</h5>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>User</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in _dashboardDto.LatestOrders)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.UserName</td>
+                    <td>@order.OrderDate.ToShortDateString()</td>
+                    <td>@order.Status</td>
+                    <td>@order.TotalAmount.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Customers -->
+@if (customersDashboard is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="row g-3">
+        <!-- Total Customers -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                <h6 class="fw-bold text-muted">👥 Total Customers</h6>
+                <h3 class="fw-bold text-primary">@customersDashboard.TotalCustomers</h3>
+            </div>
+        </div>
+
+        <!-- New Customers -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                <h6 class="fw-bold text-muted">✨ New Customers (This Month)</h6>
+                <h3 class="fw-bold text-success">@customersDashboard.NewCustomersThisMonth</h3>
+            </div>
+        </div>
+
+        <!-- Active Customers -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                <h6 class="fw-bold text-muted">🔥 Active Customers</h6>
+                <h3 class="fw-bold text-warning">@customersDashboard.ActiveCustomers</h3>
+            </div>
+        </div>
+
+        <!-- Inactive Customers -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                <h6 class="fw-bold text-muted">❌ Inactive Customers</h6>
+                <h3 class="fw-bold text-danger">@customersDashboard.InActiveCustomers</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Customers Table -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-white">
+                    <h5 class="fw-bold mb-0">📋 Latest Registered Customers</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Register Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in customersDashboard.LatestCustomers)
+                            {
+                                <tr>
+                                    <td>@c.CustomerId</td>
+                                    <td>@c.FullName</td>
+                                    <td>@c.Email</td>
+                                    <td>@c.RegisterDate.ToString("yyyy-MM-dd")</td>
+                                    <td>
+                                        <span class="badge @(c.Status == "Active" ? "bg-success" :
+                                                                                                          c.Status == "Inactive" ? "bg-danger" :
+                                                                                                          "bg-warning text-dark")">
+                                    @c.Status
+                                </span>
+                            </td>
+                        </tr>
+                                                }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+ *@
+
+
+@*@page "/dashboard"
+ @using System.Globalization
+@using Radzen.Blazor
+@using RowadSystem.Shard.Contract.Reports
+@using RowadSystem.Shard.consts.Enums
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bar-chart text-primary" viewBox="0 0 16 16">
+      <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+    </svg>
+                    <span class="fs-4 ps-1 fw-bold">Dashboard</span>
+
+</h2>
+    
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+    else if (todaySales is null || monthlySales is null || _topProductDtos is null || _lowStockProducts is null)
+    {
+        <div class="text-muted">Loading...</div>
+    }
+    else
+    {
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                     <div class="d-flex justify-content-between align-items-center mb-2">
+                         <span class="fw-semibold text-muted">Today's Sales</span>
+                         <span class="badge bg-danger-subtle text-primary rounded-pill">
+                             @todaySales.Date.ToString("dd MMM yyyy")
+                         </span>
+                     </div>
+                    <h3 class="fw-bold text-primary">
+                        @todaySales.TotalSales.ToString("C0", new CultureInfo("ar-EG"))
+                    </h3>
+
+                    <small class="text-muted">@todaySales.TotalInvoices Invoices</small>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                     <div class="d-flex justify-content-between align-items-center mb-2">
+                         <span class="fw-semibold text-muted">This Month</span>
+                         <span class="badge bg-success-subtle text-success rounded-pill">
+                             @DateTime.Now.ToString("MMMM yyyy")
+                         </span>
+                     </div>
+                    <h3 class="fw-bold text-success">
+                        @monthlySales.TotalSales.ToString("C0", new CultureInfo("ar-EG"))
+                    </h3>
+                    <small class="text-muted">@monthlySales.TotalInvoices Invoices</small>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                    <h6 class="fw-semibold text-muted">Low Stock</h6>
+                    <h3 class="fw-bold text-danger">@_lowStockProducts.Count()</h3>
+                    <small class="text-muted">Products</small>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                    <h6 class="fw-semibold text-muted">Top Products</h6>
+                    <h3 class="fw-bold text-warning">@_topProductDtos.Count()</h3>
+                    <small class="text-muted">Best Sellers</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Trend -->
+        <div class="card shadow-sm border-0 rounded-3 p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                 <h5 class="fw-bold mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-graph-up-arrow text-primary" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    <span class="fs-6 ps-1 fw-bold">Sales Trend</span>
+                 </h5>
+                <div class="d-flex gap-2">
+                    <RadzenDatePicker @bind-Value="_dateDto.StartDate"
+                                      DateFormat="yyyy-MM-dd"
+                                      Change="OnDateChanged"
+                                      Style="width:140px;" />
+                    <RadzenDatePicker @bind-Value="_dateDto.EndDate"
+                                      DateFormat="yyyy-MM-dd"
+                                      Change="OnDateChanged"
+                                      Style="width:140px;" />
+                </div>
+            </div>
+            <RadzenChart Style="height:300px">
+                <RadzenLineSeries Data="@salesData"
+                                  CategoryProperty="FormattedDate"
+                                  ValueProperty="TotalSales"
+                                  Title="Total Sales" />
+            </RadzenChart>
+        </div>
+
+        <!-- Orders -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card text-center p-3 shadow-sm border-0">
+                    <h6>Total Orders</h6>
+                    <h4 class="fw-bold">@_dashboardDto.TotalOrders</h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 shadow-sm border-0 text-warning">
+                    <h6>Pending</h6>
+                    <h4 class="fw-bold">@_dashboardDto.PendingOrders</h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 shadow-sm border-0 text-success">
+                    <h6>Completed</h6>
+                    <h4 class="fw-bold">@_dashboardDto.CompletedOrders</h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 shadow-sm border-0 text-danger">
+                    <h6>Cancelled</h6>
+                    <h4 class="fw-bold">@_dashboardDto.CancelledOrders</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Orders -->
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-white fw-bold">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list-ol text-primary" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+                  <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635z"/>
+                </svg>
+                    <span class="fs-6 ps-1 fw-bold"> Latest Orders</span>
+
+             </div>
+            <div class="card-body p-0">
+                <table class="table mb-0 table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Order #</th>
+                            <th>User</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in _dashboardDto.LatestOrders)
+                        {
+                            <tr>
+                                <td>@order.OrderId</td>
+                                <td>@order.UserName</td>
+                                <td>@order.OrderDate.ToShortDateString()</td>
+                                <td>
+                                    <span class="badge @(order.Status == OrderStatus.Completed?"bg-success":
+                                                        order.Status==OrderStatus.Pending?"bg-warning":
+                                                        "bg-danger")">
+                                        @order.Status
+                                    </span>
+                                </td>
+                                <td>@order.TotalAmount.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Customers -->
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-white fw-bold">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-people-fill text-primary" viewBox="0 0 16 16">
+  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+</svg>
+              <span class="fs-6 ps-1 fw-bold">Customers </span>
+
+             </div>
+            <div class="card-body">
+                <div class="row text-center mb-4">
+                    <div class="col-md-3"><h6>Total</h6><h4>@customersDashboard.TotalCustomers</h4></div>
+                    <div class="col-md-3 text-success"><h6>New</h6><h4>@customersDashboard.NewCustomersThisMonth</h4></div>
+                    <div class="col-md-3 text-warning"><h6>Active</h6><h4>@customersDashboard.ActiveCustomers</h4></div>
+                    <div class="col-md-3 text-danger"><h6>Inactive</h6><h4>@customersDashboard.InActiveCustomers</h4></div>
+                </div>
+
+                <table class="table table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Register Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in customersDashboard.LatestCustomers)
+                        {
+                            <tr>
+                                <td>@c.CustomerId</td>
+                                <td>@c.FullName</td>
+                                <td>@c.Email</td>
+                                <td>@c.RegisterDate.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    <span class="badge @(c.Status=="Active"?"bg-success":
+                                                        c.Status=="Inactive"?"bg-danger":"bg-warning text-dark")">
+                                        @c.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      
+
+        <div class="row g-3 my-4">
+            <!-- ✅ Top Products List -->
+            <div class="col-12 col-lg-4">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Top Products</span>
+                            <span class="badge bg-info-subtle text-info rounded-pill">Best Sellers</span>
+                        </div>
+
+                        @if (_topProductDtos.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var product in _topProductDtos)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@product.ProductName</span>
+                                        <span class="fw-semibold text-dark">
+                                            @product.TotalQuantity ×
+                                            (@product.TotalSales.ToString("C0"))
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">No products sold yet.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ Low Stock Products -->
+            <div class="col-12 col-lg-4">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Low Stock</span>
+                            <span class="badge bg-danger text-white rounded-pill">Alert</span>
+                        </div>
+
+                        @if (_lowStockProducts.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var product in _lowStockProducts)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@product.Name</span>
+                                        <span class="badge bg-danger">@product.Quantity</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-success mb-0">✅ All products in stock</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+  
+        </div>
+
+    }
+</div>
+ *@
+
+ @page "/dashboard"
+
+@using System.Globalization
+@using Radzen.Blazor
+@using RowadSystem.Shard.Contract.Reports
+@using RowadSystem.Shard.consts.Enums
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bar-chart text-primary" viewBox="0 0 16 16">
+      <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+    </svg>
+                    <span class="fs-4 ps-1 fw-bold">Dashboard</span>
+
+</h2>
+    
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">@errorMessage</div>
+    }
+    else if (todaySales is null || monthlySales is null || _topProductDtos is null || _lowStockProducts is null)
+    {
+        <div class="text-muted">Loading...</div>
+    }
+    else
+    {
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                     <div class="d-flex justify-content-between align-items-center mb-2">
+                         <span class="fw-semibold text-muted">Today's Sales</span>
+                         <span class="badge bg-danger-subtle text-primary rounded-pill">
+                             @todaySales.Date.ToString("dd MMM yyyy")
+                         </span>
+                     </div>
+                    <h3 class="fw-bold text-primary">
+                        @todaySales.TotalSales.ToString("C0", new CultureInfo("ar-EG"))
+                    </h3>
+
+                    <small class="text-muted">@todaySales.TotalInvoices Invoices</small>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                     <div class="d-flex justify-content-between align-items-center mb-2">
+                         <span class="fw-semibold text-muted">This Month</span>
+                         <span class="badge bg-success-subtle text-success rounded-pill">
+                             @DateTime.Now.ToString("MMMM yyyy")
+                         </span>
+                     </div>
+                    <h3 class="fw-bold text-success">
+                        @monthlySales.TotalSales.ToString("C0", new CultureInfo("ar-EG"))
+                    </h3>
+                    <small class="text-muted">@monthlySales.TotalInvoices Invoices</small>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                    <h6 class="fw-semibold text-muted">Low Stock</h6>
+                    <h3 class="fw-bold text-danger">@_lowStockProducts.Count()</h3>
+                    <small class="text-muted">Products</small>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3 text-center p-3">
+                    <h6 class="fw-semibold text-muted">Top Products</h6>
+                    <h3 class="fw-bold text-warning">@_topProductDtos.Count()</h3>
+                    <small class="text-muted">Best Sellers</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Trend -->
+        <div class="card shadow-sm border-0 rounded-3 p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                 <h5 class="fw-bold mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-graph-up-arrow text-primary" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+                    </svg>
+                    <span class="fs-6 ps-1 fw-bold">Sales Trend</span>
+                 </h5>
+                <div class="d-flex gap-2">
+                    <RadzenDatePicker @bind-Value="_dateDto.StartDate"
+                                      DateFormat="yyyy-MM-dd"
+                                      Change="OnDateChanged"
+                                      Style="width:140px;" />
+                    <RadzenDatePicker @bind-Value="_dateDto.EndDate"
+                                      DateFormat="yyyy-MM-dd"
+                                      Change="OnDateChanged"
+                                      Style="width:140px;" />
+                </div>
+            </div>
+            <RadzenChart Style="height:300px">
+                <RadzenLineSeries Data="@salesData"
+                                  CategoryProperty="FormattedDate"
+                                  ValueProperty="TotalSales"
+                                  Title="Total Sales" />
+            </RadzenChart>
+        </div>
+
+        <!-- Orders -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card text-center p-3 shadow-sm border-0">
+                    <h6>Total Orders</h6>
+                    <h4 class="fw-bold">@_dashboardDto.TotalOrders</h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 shadow-sm border-0 text-warning">
+                    <h6>Pending</h6>
+                    <h4 class="fw-bold">@_dashboardDto.PendingOrders</h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 shadow-sm border-0 text-success">
+                    <h6>Completed</h6>
+                    <h4 class="fw-bold">@_dashboardDto.CompletedOrders</h4>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center p-3 shadow-sm border-0 text-danger">
+                    <h6>Cancelled</h6>
+                    <h4 class="fw-bold">@_dashboardDto.CancelledOrders</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest Orders -->
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-white fw-bold">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-list-ol text-primary" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5"/>
+                  <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635z"/>
+                </svg>
+                    <span class="fs-6 ps-1 fw-bold"> Latest Orders</span>
+
+             </div>
+            <div class="card-body p-0">
+                <table class="table mb-0 table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Order #</th>
+                            <th>User</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in _dashboardDto.LatestOrders)
+                        {
+                            <tr>
+                                <td>@order.OrderId</td>
+                                <td>@order.UserName</td>
+                                <td>@order.OrderDate.ToShortDateString()</td>
+                                <td>
+                                    <span class="badge @(order.Status == OrderStatus.Delivered?"bg-success":
+                                                        order.Status==OrderStatus.Pending?"bg-warning":
+                                                        "bg-danger")">
+                                        @order.Status
+                                    </span>
+                                </td>
+                                <td>@order.TotalAmount.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Customers -->
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-white fw-bold">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-people-fill text-primary" viewBox="0 0 16 16">
+  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+</svg>
+              <span class="fs-6 ps-1 fw-bold">Customers </span>
+
+             </div>
+            <div class="card-body">
+                <div class="row text-center mb-4">
+                    <div class="col-md-3"><h6>Total</h6><h4>@customersDashboard.TotalCustomers</h4></div>
+                    <div class="col-md-3 text-success"><h6>New</h6><h4>@customersDashboard.NewCustomersThisMonth</h4></div>
+                    <div class="col-md-3 text-warning"><h6>Active</h6><h4>@customersDashboard.ActiveCustomers</h4></div>
+                    <div class="col-md-3 text-danger"><h6>Inactive</h6><h4>@customersDashboard.InActiveCustomers</h4></div>
+                </div>
+
+                <table class="table table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Register Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in customersDashboard.LatestCustomers)
+                        {
+                            <tr>
+                                <td>@c.CustomerId</td>
+                                <td>@c.FullName</td>
+                                <td>@c.Email</td>
+                                <td>@c.RegisterDate.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    <span class="badge @(c.Status=="Active"?"bg-success":
+                                                        c.Status=="Inactive"?"bg-danger":"bg-warning text-dark")">
+                                        @c.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      
+
+        <div class="row g-3 my-4">
+            <!-- ✅ Top Products List -->
+            <div class="col-12 col-lg-4">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Top Products</span>
+                            <span class="badge bg-info-subtle text-info rounded-pill">Best Sellers</span>
+                        </div>
+
+                        @if (_topProductDtos.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var product in _topProductDtos)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@product.ProductName</span>
+                                        <span class="fw-semibold text-dark">
+                                            @product.TotalQuantity ×
+                                            (@product.TotalSales.ToString("C0"))
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">No products sold yet.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- ✅ Low Stock Products -->
+            <div class="col-12 col-lg-4">
+                <div class="card shadow-sm border-0 rounded-3 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-semibold text-muted">Low Stock</span>
+                            <span class="badge bg-danger text-white rounded-pill">Alert</span>
+                        </div>
+
+                        @if (_lowStockProducts.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var product in _lowStockProducts)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@product.Name</span>
+                                        <span class="badge bg-danger">@product.Quantity</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-success mb-0">✅ All products in stock</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+  
+        </div>
+
+    }
+</div>

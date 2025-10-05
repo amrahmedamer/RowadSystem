@@ -1,0 +1,62 @@
+﻿@* @page "/admin/roles/edit/{roleId}"
+@inject RoleService RoleService
+@inject NavigationManager Navigation
+
+<h3>تعديل الدور</h3>
+
+<EditForm Model="roleToEdit" OnValidSubmit="UpdateRole">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">اسم الدور</label>
+        <InputText class="form-control" @bind-Value="roleToEdit.Role" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">الصلاحيات</label>
+        <InputSelect @bind-Value="roleToEdit.Permissions" multiple class="form-control">
+            @foreach (var permission in allPermissions)
+            {
+                <option value="@permission">@permission</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">تعديل الدور</button>
+</EditForm>
+
+ *@
+
+@page "/admin/roles/edit"
+
+@if (isLoading)
+{
+    <p>جاري تحميل الأدوار...</p>
+}
+else
+{
+    <Modal @ref="modal" ModalId="_roleToEdit" Title="Edit Role">
+        <BodyContent>
+            <EditForm Model="roleToEdit" OnSubmit="EditRole" id="UpdateRoleId">
+
+                <div class="mb-3">
+                    <label class="form-label">اسم الدور</label>
+                    <InputText class="form-control" @bind-Value="roleToEdit.Role" />
+                </div>
+             
+            </EditForm>
+        </BodyContent>
+        <FooterContent>
+            <button class="btn btn-outline-secondary" @onclick="CloseModal">Cancel</button>
+            <button type="submit" class="btn btn-primary" form="UpdateRoleId">Save</button>
+        </FooterContent>
+     
+    </Modal>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-2">
+        <strong>Error!</strong> @errorMessage
+    </div>
+}

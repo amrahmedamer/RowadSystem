@@ -1,0 +1,56 @@
+
+
+/* Navbar Style */
+.navbar-toggler {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 10px;
+}
+
+.top-row {
+    height: 4rem;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.navbar-brand {
+    font-size: 1.3rem;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Links Style */
+.nav-item ::deep a {
+    color: #999; /* اللون الرمادي */
+    border-radius: 10px;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    line-height: 3.5rem;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 0 15px;
+}
+
+.nav-item ::deep a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #00aaff; /* Highlight color */
+}
+
+.nav-item ::deep a:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* اللون الأسود الغامق عند التمرير */
+    color: #333; /* اللون الأسود الغامق للنص */
+}
+
+
+.dropdown-toggle::after {
+    display: none; /* يخفي السهم الافتراضي */
+}
+
+
+
+
+
+
+
+
+
+

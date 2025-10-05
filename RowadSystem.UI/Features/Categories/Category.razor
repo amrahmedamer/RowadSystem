@@ -1,0 +1,168 @@
+﻿@page "/Category"
+@using Blazored.FluentValidation
+<PageTitle>Category</PageTitle>
+
+<Modal @ref="modal" ModalId="_categoryRequest" Title="Add Category">
+    <BodyContent>
+        <EditForm Model="@_categoryRequest" onsubmit="HandleSubmit" id="FormModal">
+            <FluentValidationValidator />
+
+            <!-- Customer Name -->
+            <div class="mb-4">
+                <label for="Name" class="form-label fs-6 fw-bold">Name</label>
+                <InputText id="Name" class="form-control shadow-sm" @bind-Value="_categoryRequest.Name" placeholder="Enter Name" />
+                <ValidationMessage For="() => _categoryRequest.Name" />
+            </div>
+
+        </EditForm>
+    </BodyContent>
+      <FooterContent>
+        <button class="btn btn-outline-secondary" @onclick="CloseModal">Cancel</button>
+        <button type="submit" class="btn btn-primary" form="FormModal">Save</button>
+    </FooterContent>
+</Modal>
+
+ <div class="container-fluid px-3 animate__animated animate__fadeIn">
+
+        <!-- Header Section -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                <div class="d-flex align-items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-list-task text-primary" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z" />
+                        <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z" />
+                        <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z" />
+                    </svg>
+                    <div>
+                        <h4 class="mb-0 fw-bold text-dark">Category</h4>
+                    </div>
+                </div>
+
+                <a @onclick="OpenModal"  class="btn btn-primary btn-sm fw-semibold px-4 py-2 shadow-sm d-flex align-items-center gap-3 ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt-cutoff" viewBox="0 0 16 16">
+                        <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5M11.5 4a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z" />
+                        <path d="M2.354.646a.5.5 0 0 0-.801.13l-.5 1A.5.5 0 0 0 1 2v13H.5a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1H15V2a.5.5 0 0 0-.053-.224l-.5-1a.5.5 0 0 0-.8-.13L13 1.293l-.646-.647a.5.5 0 0 0-.708 0L11 1.293l-.646-.647a.5.5 0 0 0-.708 0L9 1.293 8.354.646a.5.5 0 0 0-.708 0L7 1.293 6.354.646a.5.5 0 0 0-.708 0L5 1.293 4.354.646a.5.5 0 0 0-.708 0L3 1.293zm-.217 1.198.51.51a.5.5 0 0 0 .707 0L4 1.707l.646.647a.5.5 0 0 0 .708 0L6 1.707l.646.647a.5.5 0 0 0 .708 0L8 1.707l.646.647a.5.5 0 0 0 .708 0L10 1.707l.646.647a.5.5 0 0 0 .708 0L12 1.707l.646.647a.5.5 0 0 0 .708 0l.509-.51.137.274V15H2V2.118z" />
+                    </svg>
+                    Add Category
+                </a>
+            </div>
+        </div>
+@if (IsLoading)
+{
+    <div class="d-flex justify-content-center align-items-center" style="height: 60vh;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+   
+
+        <!-- Toolbar Merged Inside Card Header -->
+        <div class="card-header bg-white border-bottom py-3 px-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                <!-- Rows Per Page Selector -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="mb-0 text-muted">Rows:</label>
+                    <select class="form-select form-select-sm w-auto shadow-sm" @onchange="OnPageSizeChanged">
+                        @foreach (var size in new[] { 5, 10, 20 })
+                        {
+                            <option value="@size" selected="@(PageSize == size)">@size</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Supplier Table Card with Toolbar -->
+        <div class="card shadow-sm border-0">
+
+            <!-- Table Body -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center mb-0">
+                        <thead class="bg-secondary text-white border-bottom border-3 border-white">
+                            <tr>
+                                <th style="width: 100px;" class="py-3 px-2">#</th>
+                                <th class="text-start py-3 px-3">Name</th>
+                                @* <th style="width: 100px;" class="py-3 px-3">Name</th> *@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (_listResponse is not null)
+                            {
+                                @foreach (var expense in _listResponse.Items)
+                                {
+                                    <tr>
+                                        <td class="text-muted fw-semibold">@expense.Id</td>
+                                        <td class=" text-start text-muted fw-semibold">@expense.Name</td>
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-5">
+                                        <i class="bi bi-person-x fs-4 text-danger"></i> No Expenses found.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Below the Table -->
+                <nav aria-label="Page navigation example" class="mt-3 d-flex justify-content-center">
+                    <ul class="pagination pagination-sm mb-0">
+                        <!-- Previous Button -->
+                        <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
+                            <button class="page-link d-flex align-items-center gap-1" @onclick="() => ChangePage(CurrentPage - 1)" aria-label="Previous">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                    <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
+                                </svg>
+                                Prev
+                            </button>
+                        </li>
+
+                        <!-- Page Numbers with ellipsis -->
+                        @for (int i = 1; i <= _listResponse.TotalPages; i++)
+                        {
+                            if (i == 1 || i == _listResponse.TotalPages || Math.Abs(i - CurrentPage) <= 1)
+                            {
+                                <li class="page-item @(CurrentPage == i ? "active" : "")" aria-current="@(CurrentPage == i ? "page" : null)">
+                                    <button class="page-link" @onclick="() => ChangePage(i)">@i</button>
+                                </li>
+                            }
+                            else if (i == CurrentPage - 2 || i == CurrentPage + 2)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">…</span>
+                                </li>
+                            }
+                        }
+
+                        <!-- Next Button -->
+                        <li class="page-item @(CurrentPage == _listResponse.TotalPages ? "disabled" : "")">
+                            <button class="page-link d-flex align-items-center gap-1" @onclick="() => ChangePage(CurrentPage + 1)" aria-label="Next">
+                                Next
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                    <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+                                </svg>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+ } 
+    </div>
+
+
+
+
+

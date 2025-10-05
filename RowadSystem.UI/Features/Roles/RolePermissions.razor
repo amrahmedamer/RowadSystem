@@ -1,0 +1,42 @@
+﻿@page "/admin/roles/{roleId}/permissions"
+@inject NavigationManager Navigation
+
+<h3>إدارة صلاحيات الدور</h3>
+
+@if (isLoading)
+{
+    <p>جارٍ تحميل البيانات...</p>
+}
+else
+{
+    <EditForm Model="roleToEdit" OnValidSubmit="SavePermissions">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>الموديول</th>
+                    <th>عرض</th>
+                    <th>إضافة</th>
+                    <th>تعديل</th>
+                    <th>حذف</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var module in permissionGroups)
+                {
+                    <tr>
+                        <td>@module.Module</td>
+                        <td><InputCheckbox @bind-Value="module.CanView" /></td>
+                        <td><InputCheckbox @bind-Value="module.CanCreate" /></td>
+                        <td><InputCheckbox @bind-Value="module.CanEdit" /></td>
+                        <td><InputCheckbox @bind-Value="module.CanDelete" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <button type="submit" class="btn btn-primary">حفظ</button>
+        @* <button class="btn btn-secondary" @onclick="()=>Navigation.NavigateTo("/admin/roles")">إلغاء</button> *@
+    </EditForm>
+}
+
+

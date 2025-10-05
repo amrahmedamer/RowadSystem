@@ -1,0 +1,147 @@
+﻿@* @page "/Cart"
+
+
+<div class="container py-4">
+    <h2 class="mb-4">Your Shopping Cart</h2>
+
+    <!-- عرض المنتجات في السلة -->
+    @foreach (var item in shoppingCartResponses)
+    {
+        <div class="cart-item d-flex justify-content-between align-items-center border-bottom py-3">
+            <div class="d-flex align-items-center">
+                @foreach (var image in item.ImageResponse)
+                {
+                    <img src="@image.ThumbnailUrl" alt="Product Image" class="img-fluid" style="width: 100px; height: 100px; object-fit: cover;">
+                }
+                <div class="ms-3">
+                    <h5>@item.ProductName</h5>
+                    <p class="text-muted">Category: Electronics</p>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <input type="number" class="form-control quantity" @bind="@item.Quantity" min="1" style="width: 80px;">
+                <span class="ms-2">$@item.Price</span>
+                <button class="btn btn-danger btn-sm ms-3" @onclick="()=> RemoveItem(item.Id)" >Remove</button>
+            </div>
+        </div>
+    }
+
+    <!-- الإجمالي الكلي -->
+    <div class="d-flex justify-content-between mt-4">
+        <div class="total-price">
+            <h4>Total: $200</h4>
+        </div>
+        <a href="/checkout" class="btn btn-success">Proceed to Checkout</a>
+    </div>
+</div>
+
+ *@
+
+@* @page "/Cart"
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Your Shopping Cart</h2>
+
+    <!-- عرض المنتجات في السلة -->
+    @foreach (var item in shoppingCartResponses)
+    {
+        <div class="cart-item d-flex justify-content-between align-items-center border-bottom py-3">
+            <div class="d-flex align-items-center">
+                @foreach (var image in item.ImageResponse)
+                {
+                    <img src="@image.ThumbnailUrl" alt="Product Image" class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                }
+                <div class="ms-3">
+                    <h5 class="fw-bold">@item.ProductName</h5>
+                    <p class="text-muted">Category: Electronics</p>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <input type="number" class="form-control quantity" @bind="@item.Quantity" min="1" style="width: 80px; height: 38px;">
+                <span class="ms-2 text-success fs-5 fw-bold">$@item.Price</span>
+                <button class="btn btn-outline-danger btn-sm ms-3" @onclick="() => RemoveItem(item.Id)">Remove</button>
+            </div>
+        </div>
+    }
+
+    <!-- الإجمالي الكلي -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <div class="total-price text-end">
+            <h4 class="fw-bold">Total: <span class="text-success">$200</span></h4>
+        </div>
+        <a href="/checkout" class="btn btn-success btn-lg px-4">Proceed to Checkout</a>
+    </div>
+</div>
+ *@
+@page "/Cart"
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Your Shopping Cart</h2>
+
+    <!-- عرض المنتجات في السلة -->
+    @foreach (var item in shoppingCartResponses)
+    {
+        <div class="cart-item d-flex justify-content-between align-items-center border-bottom py-3">
+            <div class="d-flex align-items-center">
+                @foreach (var image in item.ImageResponse)
+                {
+                    <img src="@image.ThumbnailUrl" alt="Product Image" class="img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">
+                }
+                <div class="ms-3">
+                    <h5 class="fw-bold">@item.ProductName</h5>
+                    <p class="text-muted">Category: Electronics</p>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <!-- Decrease Quantity Button -->
+                <button class="btn btn-outline-secondary btn-sm" @onclick="() => DecreaseQuantity(item.Id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" />
+                    </svg>
+                </button>
+
+                <!-- Quantity Input -->
+                <h5 class="m-3">@item.Quantity</h5> 
+
+                <!-- Increase Quantity Button -->
+                <button class="btn btn-outline-primary btn-sm fw-bold" @onclick="() => IncreaseQuantity(item.Id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+                    </svg>
+                </button>
+
+                <span class="ms-2 text-success fs-5 fw-bold">$@item.Total</span>
+
+                <!-- Remove Button -->
+                <button class="btn btn-outline-danger btn-sm ms-3" @onclick="() => RemoveItem(item.Id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                    </svg>
+                    Remove
+                </button>
+            </div>
+        </div>
+    }
+
+    <!-- الإجمالي الكلي -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <div class="total-price text-end">
+            <h4 class="fw-bold">Total: <span class="text-success">$@_total</span></h4>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-3">
+            <!-- Continue Shopping Button -->
+            <a href="/" class="btn btn-outline-secondary btn-lg px-4">Continue Shopping</a>
+
+            <!-- Proceed to Checkout Button -->
+            <a href="/checkout-address" class="btn btn-success btn-lg px-4">Proceed to Checkout</a>
+        </div>
+    </div>
+</div>
+
+
+

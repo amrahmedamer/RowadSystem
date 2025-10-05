@@ -1,0 +1,105 @@
+﻿@page "/product-details/{productId:int}"
+
+@if (productDetails is not null)
+{
+    <div class="container mt-4">
+        <!-- Product Title -->
+        <h2 class="text-center mb-4">@productDetails.Name</h2>
+
+        <!-- Product Information -->
+        <div class="row mt-4">
+            <!-- Left Column (Image Gallery) -->
+            <div class="col-md-6">
+                <div id="productGallery" class="d-flex justify-content-center">
+                    <div id="productCarouselThumbnail" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @if (productDetails.Images != null && productDetails.Images.Any())
+                            {
+                                @foreach (var image in productDetails.Images.Select((value, index) => new { value, index }))
+                                {
+                                    <div class="carousel-item @(image.index == 0 ? "active" : "")">
+                                        <img src="@image.value.ImageUrl " alt="@productDetails.Name" class="d-block w-100" />
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="carousel-item active">
+                                    <img src="/NoImage.png" alt="@productDetails.Name" class="d-block w-100" />
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (Product Information) -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <!-- Price and Discount -->
+                    <h4 class="text-success">@productDetails.PurchasePrice?.ToString("C")</h4>
+
+                    @if (productDetails.Discount is not null)
+                    {
+                        <div class="alert alert-warning mb-2">
+                            <strong>Discount:</strong> @productDetails.Discount.Value% off
+                        </div>
+                        <h5 class="text-primary"><strong>Final Price:</strong> @productDetails.FinalPrice?.ToString("C")</h5>
+                    }
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <h5>Description:</h5>
+                    <p>@productDetails.Description</p>
+                </div>
+
+                <!-- Availability and Status -->
+                <div class="mb-3">
+                    <p><strong>Status:</strong> @productDetails.Status</p>
+                    <p><strong>Quantity Available:</strong> @productDetails.Quantity</p>
+                </div>
+
+                <!-- Units -->
+                <div class="mb-3">
+                    <h5>Units:</h5>
+                    <ul class="list-group">
+                        @foreach (var unit in productDetails.ProductUnit)
+                        {
+                            <li class="list-group-item">@unit.Name - @unit.NumberOfUnits</li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-3">
+                    <a class="btn btn-outline-primary btn-lg" href="/update-product/@productDetails.Id">Edit</a>
+                    <button class="btn btn-success btn-lg" @onclick="Back">Back</button>
+                </div>
+                <button @onclick="GetBarcode">Get Barcode</button>
+
+                @if (!string.IsNullOrEmpty(barcodeUrl))
+                {
+                    <img src="@barcodeUrl" alt="Barcode" />
+                }
+
+                <button @onclick="PrintBarcode">Print Barcode</button>
+
+
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+
+
+
+

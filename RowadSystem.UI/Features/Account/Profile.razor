@@ -1,0 +1,158 @@
+﻿
+@page "/profile" 
+
+@* <PageTitle>Profile</PageTitle>
+
+<div class="app-navbar-item ms-1 ms-md-4" id="kt_header_user_menu_toggle">
+    <!--begin::Menu wrapper-->
+    <div class="cursor-pointer symbol symbol-35px show menu-dropdown nav-link text-white fw-semibold position-relative link-hover profile-icon " data-bs-toggle="dropdown" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+        </svg>
+    </div>
+    <!--begin::User account menu-->
+    <div class="dropdown-menu dropdown-menu-end w-275px" aria-labelledby="kt_header_user_menu_toggle">
+        <!--begin::Menu item-->
+        <div class="menu-item px-3">
+            <div class="menu-content d-flex align-items-center px-3">
+                 <!--begin::Avatar-->
+                <div class="symbol symbol-50px me-5">
+                    <img alt="Logo" src="https://res.cloudinary.com/dqdwc0uem/image/upload/v1755329086/product/product/efa74d6e-a5eb-466a-8dd8-1457e274b783.jpg">
+                </div> 
+                <!--end::Avatar-->
+                @if (userProfile != null)
+                {
+                    <!--begin::Username-->
+                    <div class="d-flex flex-column">
+                        <div class="fw-bold d-flex align-items-center fs-5">
+                            @userProfile.FirstName @userProfile.LastName
+                            <span class="badge fw-bold fs-8 ms-2 @(userProfile.IsDeleted ? "badge-inactive" : "badge-active")"> @(userProfile.IsDeleted ? "Inactive" : "Active") </span>
+                        </div>
+                        <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">@userProfile.Email</a>
+                    </div>
+                    <!--end::Username-->
+                }
+                else
+                {
+                    <p>Loading...</p>
+                }
+
+              
+            </div>
+        </div>
+    
+        <!--begin::Menu item-->
+        <div class="menu-item px-5">
+            <a href="/settings" class="menu-link px-5">Account Settings</a>
+        </div>
+        <!--end::Menu item-->
+        <!--begin::Menu item-->
+        <div class="menu-item px-5">
+            <a href="#" class="menu-link px-5" @onclick="LogOutAsync">Log Out</a>
+        </div>
+        <!--end::Menu item-->
+    </div>
+    <!--end::User account menu-->
+    <!--end::Menu wrapper-->
+</div>
+ *@
+
+@* 
+<PageTitle>Profile</PageTitle>
+
+<div class="app-navbar-item ms-1 ms-md-4" id="kt_header_user_menu_toggle">
+    <!-- بداية القائمة المنسدلة -->
+    <div class="cursor-pointer symbol symbol-35px show menu-dropdown nav-link text-white fw-semibold position-relative link-hover profile-icon" data-bs-toggle="dropdown" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+        </svg>
+    </div>
+    <!-- قائمة حساب المستخدم -->
+    <div class="dropdown-menu dropdown-menu-end w-275px" aria-labelledby="kt_header_user_menu_toggle">
+        <div class="menu-item px-3 d-flex align-items-center">
+            @if (userProfile != null)
+            {
+                <!-- تفاصيل المستخدم -->
+                <div class="d-flex flex-column">
+                    <div class="fw-bold fs-5">
+                        @userProfile.FirstName @userProfile.LastName
+                        <span class="badge fw-bold fs-8 ms-2 @(userProfile.IsDeleted ? "bg-danger" : "bg-success")">
+                            @(userProfile.IsDeleted ? "Inactive" : "Active")
+                        </span>
+                    </div>
+                    <a href="#" class="text-muted text-hover-primary fs-7">@userProfile.Email</a>
+                </div>
+            }
+            else
+            {
+                <p class="text-center">Loading...</p>
+            }
+        </div>
+
+        <!-- إعدادات الحساب -->
+        <div class="menu-item pt-xxl-4">
+            <a href="/settings" class="menu-link px-5 py-3 fs-6 fw-semibold text-hover-primary">
+                <i class="bi bi-gear-fill me-2"></i>Account Settings
+            </a>
+        </div>
+
+        <!-- تسجيل الخروج -->
+        <div class="menu-item  pt-xxl-4">
+            <a href="#" class="menu-link px-5 py-3 fs-6 fw-semibold text-hover-danger" @onclick="LogOutAsync">
+                <i class="bi bi-box-arrow-right me-2"></i>Log Out
+            </a>
+        </div>
+
+    </div>
+</div>
+ *@
+
+<PageTitle>Profile</PageTitle>
+<div class="dropdown ms-3">
+    <!-- زر الأيقونة -->
+    <a class="nav-link dropdown-toggle d-flex align-items-center text-white fw-semibold" href="#" role="button"
+       id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor"
+             class="bi bi-person-circle" viewBox="0 0 16 16">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+            <path fill-rule="evenodd"
+                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37
+                     C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+        </svg>
+    </a>
+
+    <!-- القائمة المنسدلة -->
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu" style="min-width: 250px;">
+        <li class="px-3 py-2">
+            @if (userProfile != null)
+            {
+                <div class="d-flex flex-column">
+                    <div class="fw-bold">
+                        @userProfile.FirstName @userProfile.LastName
+                        <span class="badge @(userProfile.IsDeleted ? "bg-danger" : "bg-success") ms-1">
+                            @(userProfile.IsDeleted ? "Inactive" : "Active")
+                        </span>
+                    </div>
+                    <small class="text-muted">@userProfile.Email</small>
+                </div>
+            }
+            else
+            {
+                <p class="text-center m-0">Loading...</p>
+            }
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center" href="/settings">
+                <i class="bi bi-gear-fill me-2"></i> Account Settings
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item d-flex align-items-center text-danger" href="#" @onclick="LogOutAsync">
+                <i class="bi bi-box-arrow-right me-2"></i> Log Out
+            </a>
+        </li>
+    </ul>
+</div>

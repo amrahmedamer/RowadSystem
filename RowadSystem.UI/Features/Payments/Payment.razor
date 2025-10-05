@@ -1,0 +1,346 @@
+﻿@* 
+
+
+    @page "/payment"
+
+<div class="container my-5">
+    <!-- عرض محتويات السلة قبل الدفع -->
+    <h2 class="text-center mb-4">تفاصيل السلة</h2>
+
+    <div class="row">
+        <!-- عرض المنتجات في السلة بشكل ديناميكي -->
+        <div class="col-12">
+            <ul class="list-group">
+                @foreach (var item in shoppingCartItems)
+                {
+                    <li class="list-group-item">
+                        <strong>@item.ProductName</strong> - @item.Quantity x @item.Price EGP
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+        <!-- Address Section -->
+        <div class="mb-4">
+            <h6 class="fw-bold">Address</h6>
+            <div class="row g-3">
+                <div class="col-md-4 col-12">
+                    <select @bind="_orderRequest.Address.GovernorateId" class="form-select shadow-sm" aria-label="Select Governorate" @oninput="@(e => OnGovernorateChanged(e))">
+                        <option value="">Select Governorate</option>
+                        @foreach (var governrate in _governrateResponse)
+                        {
+                            <option value="@governrate.Id">@governrate.Name</option>
+                        }
+                    </select>
+                    <ValidationMessage For="@(() => _orderRequest.Address.GovernorateId)" class="text-danger fs-6" />
+
+                </div>
+                <div class="col-md-4 col-12">
+                    <select @bind="_orderRequest.Address.CityId" class="form-select shadow-sm" aria-label="Select City" @oninput="@(e => OnGovernorateChanged(e))">
+                        <option value="">Select City</option>
+                        @foreach (var cities in _citiesResponse)
+                        {
+                            <option value="@cities.Id">@cities.Name</option>
+                        }
+                    </select>
+                    <ValidationMessage For="@(() => _orderRequest.Address.CityId)" class="text-danger fs-6" />
+
+                </div>
+                <div class="col-md-4 col-12">
+                    <InputText @bind-Value="_orderRequest.Address.Street"
+                               class="form-control  shadow-sm "
+                               placeholder="Street" />
+                    <ValidationMessage For="@(() => _orderRequest.Address.Street)" class="text-danger fs-6" />
+
+                </div>
+            </div>
+            <div class="mb-3">
+                <InputText @bind-Value="_orderRequest.Address.AddressDetails"
+                           class="form-control  shadow-sm mt-2"
+                           placeholder="Address Details" />
+                <ValidationMessage For="@(() => _orderRequest.Address.AddressDetails)" class="text-danger fs-6" />
+
+            </div>
+        </div>
+
+    <!-- زر Process to Checkout -->
+    <div class="text-center mt-4">
+        <button class="btn btn-primary" @onclick="ProcessCheckoutAsync">إتمام الطلب</button>
+    </div>
+
+    <!-- عرض اختيارات الدفع بعد إتمام الـ Checkout -->
+    @if (isCheckoutCompleted)
+    {
+        <h2 class="text-center mt-5 mb-4">اختر طريقة الدفع</h2>
+
+        <div class="row text-center">
+            <!-- الدفع باستخدام بطاقة ائتمانية -->
+            <div class="col-md-4">
+                <div class="card shadow-sm p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.CreditCard)">
+                    <img src="CreditCard.png" class="card-img-top mx-auto d-block" alt="Card Icon" style="width: 80px; height: 80px;">
+                    <div class="card-body">
+                        <h5 class="card-title">الدفع باستخدام بطاقة ائتمانية</h5>
+                        <p class="card-text">سهل وآمن باستخدام البطاقة الائتمانية الخاصة بك</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الدفع عبر المحفظة الإلكترونية -->
+            <div class="col-md-4">
+                <div class="card shadow-sm p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.Wallet)">
+                    <img src="Wallet.png" class="card-img-top mx-auto d-block" alt="Wallet Icon" style="width: 80px; height: 80px;">
+                    <div class="card-body">
+                        <h5 class="card-title">الدفع عبر المحفظة الإلكترونية</h5>
+                        <p class="card-text">استخدم محفظتك الإلكترونية لإجراء الدفع</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الدفع عند الاستلام -->
+            <div class="col-md-4">
+                <div class="card shadow-sm p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.CashOnDelivery)">
+                    <img src="CashOnDelivery.png" class="card-img-top mx-auto d-block" alt="Cash on Delivery Icon" style="width: 80px; height: 80px;">
+                    <div class="card-body">
+                        <h5 class="card-title">الدفع عند الاستلام</h5>
+                        <p class="card-text">ادفع عند استلام المنتج</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- عرض النموذج المناسب بناءً على الاختيار -->
+        <div class="payment-form mt-4">
+            @if (selectedPaymentMethod == PaymentMethodOrder.CreditCard)
+            {
+                <Pay CheckoutResponse="CheckoutResponse" />
+            }
+            else if (selectedPaymentMethod == PaymentMethodOrder.Wallet)
+            {
+                <Wallet CheckoutResponse="CheckoutResponse" />
+            }
+            else if (selectedPaymentMethod == PaymentMethodOrder.CashOnDelivery)
+            {
+                 <CashOnDelivery /> 
+            }
+        </div>
+    }
+</div>
+
+ *@
+
+@* @page "/payment"
+
+<div class="container my-5">
+    <!-- Cart Details Section -->
+    <h2 class="text-center mb-4 text-primary">Cart Details</h2>
+
+    <div class="row">
+        <!-- Dynamically Display Cart Items -->
+        <div class="col-12">
+            <ul class="list-group shadow-sm rounded-3">
+                @foreach (var item in shoppingCartItems)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>@item.ProductName</strong>
+                        <span>@item.Quantity x @item.Price EGP</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <!-- Address Section -->
+    <div class="mb-4 mt-5">
+        <h6 class="fw-bold text-secondary">Address</h6>
+        <div class="row g-3">
+            <div class="col-md-4 col-12">
+                <select @bind="_orderRequest.Address.GovernorateId" class="form-select shadow-sm" aria-label="Select Governorate" @oninput="@(e => OnGovernorateChanged(e))">
+                    <option value="">Select Governorate</option>
+                    @foreach (var governrate in _governrateResponse)
+                    {
+                        <option value="@governrate.Id">@governrate.Name</option>
+                    }
+                </select>
+                <ValidationMessage For="@(() => _orderRequest.Address.GovernorateId)" class="text-danger fs-6" />
+            </div>
+
+            <div class="col-md-4 col-12">
+                <select @bind="_orderRequest.Address.CityId" class="form-select shadow-sm" aria-label="Select City" @oninput="@(e => OnGovernorateChanged(e))">
+                    <option value="">Select City</option>
+                    @foreach (var cities in _citiesResponse)
+                    {
+                        <option value="@cities.Id">@cities.Name</option>
+                    }
+                </select>
+                <ValidationMessage For="@(() => _orderRequest.Address.CityId)" class="text-danger fs-6" />
+            </div>
+
+            <div class="col-md-4 col-12">
+                <InputText @bind-Value="_orderRequest.Address.Street"
+                           class="form-control shadow-sm"
+                           placeholder="Street" />
+                <ValidationMessage For="@(() => _orderRequest.Address.Street)" class="text-danger fs-6" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <InputText @bind-Value="_orderRequest.Address.AddressDetails"
+                       class="form-control shadow-sm mt-2"
+                       placeholder="Address Details" />
+            <ValidationMessage For="@(() => _orderRequest.Address.AddressDetails)" class="text-danger fs-6" />
+        </div>
+    </div>
+     <!-- Phone Section Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="text-primary fw-bold mb-0">Phone Number</h6>
+                <InputText @bind-Value="_orderRequest.PhoneNumbers."
+                       class="form-control shadow-sm mt-2"
+                       placeholder="Address Details" />
+               <ValidationMessage For="@(() => _orderRequest.PhoneNumbers)" class="text-danger fs-6" />
+            </div>
+    <!-- Checkout Button -->
+    <div class="text-center mt-4">
+        <button class="btn btn-lg btn-success" @onclick="ProcessCheckoutAsync">
+            <i class="bi bi-check-circle"></i> Complete Order
+        </button>
+    </div>
+
+    <!-- Payment Methods Section (Visible after Checkout) -->
+    @if (isCheckoutCompleted)
+    {
+        <h2 class="text-center mt-5 mb-4 text-info">Choose Payment Method</h2>
+
+        <div class="row text-center">
+            <!-- Credit Card Payment -->
+            <div class="col-md-4">
+                <div class="card shadow-lg p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.CreditCard)">
+                    <img src="CreditCard.png" class="card-img-top mx-auto d-block" alt="Card Icon" style="width: 80px; height: 80px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Credit Card Payment</h5>
+                        <p class="card-text">Easy and secure using your credit card</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wallet Payment -->
+            <div class="col-md-4">
+                <div class="card shadow-lg p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.Wallet)">
+                    <img src="Wallet.png" class="card-img-top mx-auto d-block" alt="Wallet Icon" style="width: 80px; height: 80px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Wallet Payment</h5>
+                        <p class="card-text">Use your electronic wallet to make the payment</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cash on Delivery -->
+            <div class="col-md-4">
+                <div class="card shadow-lg p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.CashOnDelivery)">
+                    <img src="CashOnDelivery.png" class="card-img-top mx-auto d-block" alt="Cash on Delivery Icon" style="width: 80px; height: 80px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Cash on Delivery</h5>
+                        <p class="card-text">Pay when the product is delivered</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method Form Based on Selection -->
+        <div class="payment-form mt-4">
+            @if (selectedPaymentMethod == PaymentMethodOrder.CreditCard)
+            {
+                <Pay CheckoutResponse="CheckoutResponse" />
+            }
+            else if (selectedPaymentMethod == PaymentMethodOrder.Wallet)
+            {
+                <Wallet CheckoutResponse="CheckoutResponse" />
+            }
+            else if (selectedPaymentMethod == PaymentMethodOrder.CashOnDelivery)
+            {
+                <CashOnDelivery /> 
+            }
+        </div>
+    }
+</div>
+
+
+ *@
+
+@page "/checkout-payment"
+
+<div class="container my-5">
+    @*   <!-- Cart Details Section -->
+    <h2 class="text-center mb-4 text-primary">Cart Details</h2>
+
+    <div class="row">
+        <!-- Dynamically Display Cart Items -->
+        <div class="col-12">
+            <ul class="list-group shadow-sm rounded-3">
+                @foreach (var item in shoppingCartItems)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>@item.ProductName</strong>
+                        <span>@item.Quantity x @item.Price EGP</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+ *@
+
+
+    <h2 class="text-center mt-5 mb-4 text-info">Choose Payment Method</h2>
+
+    <div class="row text-center">
+        <!-- Credit Card Payment -->
+        <div class="col-md-4">
+            <div class="card shadow-lg p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.CreditCard)">
+                <img src="CreditCard.png" class="card-img-top mx-auto d-block" alt="Card Icon" style="width: 80px; height: 80px;">
+                <div class="card-body">
+                    <h5 class="card-title">Credit Card Payment</h5>
+                    <p class="card-text">Easy and secure using your credit card</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet Payment -->
+        <div class="col-md-4">
+            <div class="card shadow-lg p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.Wallet)">
+                <img src="Wallet.png" class="card-img-top mx-auto d-block" alt="Wallet Icon" style="width: 80px; height: 80px;">
+                <div class="card-body">
+                    <h5 class="card-title">Wallet Payment</h5>
+                    <p class="card-text">Use your electronic wallet to make the payment</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cash on Delivery -->
+        <div class="col-md-4">
+            <div class="card shadow-lg p-3 mb-4 bg-white rounded" @onclick="() => SelectPaymentMethod(PaymentMethodOrder.CashOnDelivery)">
+                <img src="CashOnDelivery.png" class="card-img-top mx-auto d-block" alt="Cash on Delivery Icon" style="width: 80px; height: 80px;">
+                <div class="card-body">
+                    <h5 class="card-title">Cash on Delivery</h5>
+                    <p class="card-text">Pay when the product is delivered</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Method Form Based on Selection -->
+    <div class="payment-form mt-4">
+        @if (selectedPaymentMethod == PaymentMethodOrder.CreditCard)
+        {
+            <Pay CheckoutResponse="CheckoutResponse" />
+        }
+        else if (selectedPaymentMethod == PaymentMethodOrder.Wallet)
+        {
+            <Wallet CheckoutResponse="CheckoutResponse" />
+        }
+        else if (selectedPaymentMethod == PaymentMethodOrder.CashOnDelivery)
+        {
+            <CashOnDelivery />
+        }
+    </div>
+
+</div>
+

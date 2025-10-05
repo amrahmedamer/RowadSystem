@@ -1,0 +1,23 @@
+﻿using RowadSystem.Shard.Contract.Address;
+using RowadSystem.Shard.Contract.Phones;
+
+namespace RowadSystem.Shard.Contract.Customers;
+
+public class CustomerRequestValidator : AbstractValidator<CustomerRequest>
+{
+    public CustomerRequestValidator()
+    {
+
+        RuleFor(x => x.Name)
+            .NotEmpty();
+
+        RuleFor(x => x.Email)
+            .EmailAddress();
+
+        RuleFor(x => x.Address)
+            .SetValidator(new AddressRequestValidator());
+
+        RuleForEach(x => x.PhoneNumbers)
+            .SetValidator(new PhoneNumberRequestValidator());
+    }
+}

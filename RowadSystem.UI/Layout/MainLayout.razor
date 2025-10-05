@@ -1,0 +1,144 @@
+﻿@using Radzen
+@using Radzen.Blazor
+@using RowadSystem.UI.Features
+@using RowadSystem.UI.Features.Account
+@using RowadSystem.UI.Features.ShoppingCart
+@inject NavigationManager NavigationManager
+
+@inherits LayoutComponentBase
+
+<div class="app-container">
+    @if (NavigationManager.Uri == $"{NavigationManager.BaseUri}" ||NavigationManager.Uri.Contains("#")||NavigationManager.Uri.Contains("register")||NavigationManager.Uri.Contains("Login")||NavigationManager.Uri.Contains("login"))
+    {
+        <!-- Layout for /Choose Page -->
+        <main>
+            <div class="bg-white p-3 shadow-sm rounded-4 border">
+                @Body
+            </div>
+        </main>
+    }
+    else
+    {
+        <!-- Header/Navbar -->
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm fixed-top py-3 px-4 custom-navbar">
+                <div class="container-fluid">
+                    <!-- Logo -->
+                    <a class="navbar-brand fw-bold d-flex align-items-center text-white" href="/">
+                        <img src="LogoRowad.png" alt="Rowad Logo" width="150" height="75" class="d-block d-lg-none" /> <!-- Smaller Logo on Mobile -->
+                        <img src="LogoRowad.png" alt="Rowad Logo" width="180" height="90" class="d-none d-lg-block" /> <!-- Larger Logo on Desktop -->
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="d-flex justify-content-between">
+                        <!-- Search Form -->
+                        <div class="navbar-brand fw-bold d-flex align-items-center text-white">
+                            <SearchForm />
+                        </div>
+
+                        <!-- Navbar Links -->
+                        <div class="collapse navbar-collapse mt-3 mt-lg-0" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto gap-3">
+                                <!-- Cart -->
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fw-semibold position-relative link-hover" href="Cart">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
+                                            <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0" />
+                                        </svg>
+                                        <!-- Cart Count -->
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            @count
+                                            <span class="visually-hidden">items in cart</span>
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <!-- Notifications -->
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fw-semibold position-relative link-hover" href="live-notifications">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+                                        </svg>
+                                        <!-- Notifications Count -->
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            <span class="visually-hidden">new notifications</span>
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <!-- Login -->
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fw-semibold position-relative link-hover" href="/Login">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                                    </a>
+                                </li>
+
+                                <!-- Register -->
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fw-semibold position-relative link-hover" href="/register">
+                                        <i class="bi bi-person-plus-fill me-1"></i> Register
+                                    </a>
+                                </li>
+
+                                <!-- Profile -->
+                                <li class="nav-item">
+                                    <Profile></Profile>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Modal Component -->
+        <Modal @ref="modal" />
+
+        <!-- Main Layout -->
+        <div class="container-fluid mt-5 pt-4 px-3">
+            <div class="row gx-4">
+                <!-- Sidebar (Hidden on Mobile) -->
+                <aside class="col-md-3 col-lg-2 d-none d-md-block">
+                    <div class="box-container sidebar fixed-sidebar p-3 shadow-sm rounded-4 rounded-custom bg-light">
+                        <NavMenu />
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <main class="col-12 col-md-9 col-lg-10 mt-md-0">
+                    <div class="box-container bg-white p-3 mt-5 shadow-sm rounded-4 border">
+                        @Body
+                    </div>
+                </main>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private Modal modal;
+    private int count;
+
+    private void OpenModal()
+    {
+        modal.Show();
+    }
+
+    private void CloseModal()
+    {
+        modal.Hide();
+    }
+
+    protected override void OnInitialized()
+    {
+        ShoopingCart.OnCountChanged += val =>
+        {
+            count = val;
+            StateHasChanged();
+        };
+    }
+}

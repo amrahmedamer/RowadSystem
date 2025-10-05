@@ -1,0 +1,120 @@
+﻿@* 
+
+@page "/admin/roles"
+
+  <CreateRole @ref="CreateComponent" OnRoleCreated="OnRoleCreatedOrUpdated" /> 
+<UpdateRole @ref="UpdateRoleComponent" OnRoleUpdated="OnRoleCreatedOrUpdated" />
+
+<h3 class="text-primary text-center mb-4">Role Management</h3>
+
+@if (roles == null)
+{
+    <div class="d-flex justify-content-center">
+        <span class="spinner-border text-primary" role="status"></span>
+        <p class="ms-3">Loading roles...</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr class="table-primary">
+                    <th>Role Name</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in roles)
+                {
+                    <tr>
+                        <td>@role.Name</td>
+                        <td>@(role.IsActive ? "Active" : "Inactive")</td>
+                        <td>
+                            <button class="btn btn-warning" @onclick="() => EditRoleComponent(role.Id)" title="Edit Role">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </button>
+                            <button class="btn btn-danger" @onclick="() => DeleteRole(role.Id)" title="Delete Role">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                            <button class="btn btn-info" @onclick="() => RolePermission(role.Id)" title="Manage Permissions">
+                                <i class="bi bi-lock"></i> Permissions
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <button class="btn btn-success mt-4" @onclick="CreateRole">
+        <i class="bi bi-plus-circle"></i> Add New Role
+    </button>
+}
+
+
+
+
+ *@
+
+
+
+
+@page "/admin/roles"
+
+<CreateRole @ref="CreateComponent" OnRoleCreated="OnRoleCreatedOrUpdated" />
+<UpdateRole @ref="UpdateRoleComponent" OnRoleUpdated="OnRoleCreatedOrUpdated" />
+
+<h3 class="text-primary text-center mb-4">Role Management</h3>
+
+@if (roles == null)
+{
+    <div class="d-flex justify-content-center">
+        <span class="spinner-border text-primary" role="status"></span>
+        <p class="ms-3">Loading roles...</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>Role Name</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in roles)
+                {
+                    <tr>
+                        <td>@role.Name</td>
+                        <td>@(role.IsActive ? "Active" : "Inactive")</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-warning btn-sm" @onclick="() => EditRoleComponent(role.Id)" title="Edit Role">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm" @onclick="() => DeleteRole(role.Id)" title="Delete Role">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                                <button class="btn btn-info btn-sm" @onclick="() => RolePermission(role.Id)" title="Manage Permissions">
+                                    <i class="bi bi-lock"></i> Permissions
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <button class="btn btn-success" @onclick="CreateRole" data-bs-toggle="tooltip" data-bs-placement="top" title="Add New Role">
+            <i class="bi bi-plus-circle"></i> Add New Role
+        </button>
+    </div>
+}
+

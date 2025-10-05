@@ -1,0 +1,49 @@
+﻿@page "/Confirm-email"
+@using Radzen
+@using Radzen.Blazor
+
+<h3 class="mb-4 text-center text-primary">🔐 Enter Verification Code</h3>
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <div class="alert alert-danger">@_errorMessage</div>
+}
+
+<EditForm Model="_confirmEmailRequest" OnValidSubmit="ConfirmEmailAsync">
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            @* <div class="mb-3">
+                <InputText @bind-Value="_confirmEmailRequest.Code"
+                           class="form-control form-control-lg text-center border-primary"
+                           maxlength="6"
+                           placeholder="🔢 Enter 6-digit OTP code" />
+            </div> *@
+            <div class="mb-3">
+                <RadzenCard Style="padding: 1rem; border: 1px solid #0d6efd; border-radius: 0.5rem;">
+                 @*    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">
+                        Numeric SecurityCode
+                    </RadzenText>
+ *@
+                    <RadzenSecurityCode @bind-Value="_confirmEmailRequest.Code"
+                                        Type="SecurityCodeType.Numeric"
+                                        Count="6"
+                                        Gap="10"
+                                        Disabled="false" />
+                </RadzenCard>
+            </div>
+
+
+            <div class="d-grid">
+                <button class="btn btn-primary btn-lg" type="submit">
+                    ✅ Verify
+                </button>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="#" class="text-decoration-none" @onclick="ResendOtp">🔁 Resend Code</a>
+            </div>
+        </div>
+    </div>
+</EditForm>

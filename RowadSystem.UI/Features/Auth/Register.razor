@@ -1,0 +1,316 @@
+﻿@* 
+
+  @page "/register"
+@using Blazored.FluentValidation
+@using FluentValidation
+
+<div class="container d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="row shadow-lg rounded-4 overflow-hidden w-100 bg-white" style="max-width: 1100px;">
+
+        <!-- Left Illustration -->
+        <div class="col-md-6 d-none d-md-block p-0">
+            <img src="Register.svg" alt="Register Illustration"
+                 class="img-fluid w-100 h-100 object-fit-cover" />
+        </div>
+
+        <!-- Right Form -->
+        <div class="col-md-6 p-5 d-flex flex-column justify-content-center">
+            <h2 class="text-primary fw-bold text-center mb-4">Create Your Account</h2>
+
+            <EditForm Model="_registerRequest" OnValidSubmit="@HandleRegister" ValidateOnInput="true">
+                <FluentValidationValidator />
+
+                <div class="row g-3">
+                    <!-- First & Last Name -->
+                    <div class="col-md-6">
+                        <InputText @bind-Value="_registerRequest.FirstName" class="form-control form-control-lg border-primary shadow-sm" placeholder="First Name" />
+                        <ValidationMessage For="@(() => _registerRequest.FirstName)" class="text-danger fs-6" />
+                    </div>
+                    <div class="col-md-6">
+                        <InputText @bind-Value="_registerRequest.LastName" class="form-control form-control-lg border-primary shadow-sm" placeholder="Last Name" />
+                        <ValidationMessage For="@(() => _registerRequest.LastName)" class="text-danger fs-6" />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-12">
+                        <InputText @bind-Value="_registerRequest.Email" class="form-control form-control-lg border-primary shadow-sm" placeholder="Email Address" />
+                        <ValidationMessage For="@(() => _registerRequest.Email)" class="text-danger fs-6" />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-12">
+                        <InputText @bind-Value="_registerRequest.Password" type="password" class="form-control form-control-lg border-primary shadow-sm" placeholder="Password" />
+                        <ValidationMessage For="@(() => _registerRequest.Password)" class="text-danger fs-6" />
+                    </div>
+
+                    <!-- Address Section -->
+                    <div class="col-12 mt-4">
+                        <h5 class="text-primary fw-bold mb-2">Address Info</h5>
+                    </div>
+
+                    <div class="col-md-6">
+                        <select @bind="_registerRequest.Address.GovernorateId" class="form-select shadow-sm" aria-label="Select Governorate" @oninput="@(e => OnGovernorateChanged(e))">
+                            <option value="0">Select Governorate</option>
+                            @foreach (var governrate in _governrateResponse)
+                            {
+                                <option value="@governrate.Id">@governrate.Name</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => _registerRequest.Address.GovernorateId)" class="text-danger fs-6" />
+                    </div>
+                    <div class="col-md-6">
+                        <select @bind="_registerRequest.Address.CityId" class="form-select shadow-sm" aria-label="Select City" @oninput="@(e => OnGovernorateChanged(e))">
+                            <option value="0">Select City</option>
+                            @foreach (var cities in _citiesResponse)
+                            {
+                                <option value="@cities.Id">@cities.Name</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => _registerRequest.Address.CityId)" class="text-danger fs-6" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <InputText @bind-Value="_registerRequest.Address.Street" class="form-control border-primary shadow-sm" placeholder="Street" />
+                        <ValidationMessage For="@(() => _registerRequest.Address.Street)" class="text-danger fs-6" />
+                    </div>
+                    <div class="col-md-6">
+                        <InputText @bind-Value="_registerRequest.Address.AddressDetails" class="form-control border-primary shadow-sm" placeholder="Address Details" />
+                        <ValidationMessage For="@(() => _registerRequest.Address.AddressDetails)" class="text-danger fs-6" />
+                    </div>
+
+                    <!-- Phone Numbers Section -->
+                    <div class="col-12 mt-4 d-flex justify-content-between align-items-center">
+                        <h5 class="text-primary fw-bold mb-0">Phone Numbers</h5>
+                        @if (_registerRequest.PhoneNumbers.Count < 2)
+                        {
+                            <button type="button" class="btn btn-outline-primary btn-sm" @onclick="AddPhoneNumber" title="Add Phone Number">➕ Add</button>
+                        }
+                    </div>
+
+                    @for (int i = 0; i < _registerRequest.PhoneNumbers.Count; i++)
+                    {
+                        var index = i;
+                        var phone = _registerRequest.PhoneNumbers[i];
+                        <div class="row g-2 mb-3 align-items-center">
+                            <div class="col-md-6 col-12">
+                                <InputText @bind-Value="phone.Number" class="form-control form-control-lg shadow-sm" placeholder="Enter phone number" />
+                                <ValidationMessage For="() => phone.Number" class="text-danger fs-6" />
+                            </div>
+                            <div class="col-md-4 col-8 d-flex align-items-center">
+                                <div class="form-check ms-1">
+                                    <input type="radio" name="primaryPhone" class="form-check-input" checked="@phone.IsPrimary" @onchange="() => SetAsPrimary(i)" />
+                                    <label class="form-check-label text-primary ms-2">Primary</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-4 text-end">
+                                @if (_registerRequest.PhoneNumbers.Count > 1)
+                                {
+                                    <button type="button" class="btn text-danger btn-sm" @onclick="() => RemovePhoneNumber(index)" title="Remove Phone Number">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                        </svg>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Submit Button -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fs-5 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-lg me-2" viewBox="0 0 16 16">
+                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                            </svg>
+                            Register
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+
+            <!-- Error Message -->
+            @if (!string.IsNullOrWhiteSpace(_errorMessage))
+            {
+                <div class="alert alert-danger mt-4" role="alert">
+                    <strong>⚠️ Error:</strong> @_errorMessage
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Inputs focus effect */
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+    }
+
+    /* Button hover effect */
+    .btn:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Smooth transition */
+    .btn, .form-control, .form-select {
+        transition: all 0.3s ease;
+    }
+</style>
+ *@
+
+@page "/register"
+@using Blazored.FluentValidation
+@using FluentValidation
+
+<div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 100vh; background-color: #f8f9fa;">
+    <div class="row bg-white shadow-lg rounded-3" style="min-height: 100vh;">
+
+        <!-- Left Illustration -->
+        <div class="col-md-6 d-none d-md-block p-0">
+            <img src="Register.svg" alt="Register Illustration"
+                 class="img-fluid w-100 h-100 object-fit-cover" />
+        </div>
+
+        <!-- Right Form -->
+        <div class="col-md-6 p-5 d-flex flex-column justify-content-center">
+            <h2 class="text-primary fw-bold text-center mb-4">Create Your Account</h2>
+
+            <EditForm Model="_registerRequest" OnValidSubmit="@HandleRegister" ValidateOnInput="true">
+                <FluentValidationValidator />
+
+                <div class="row g-3">
+                    <!-- First & Last Name -->
+                    <div class="col-md-6">
+                        <InputText @bind-Value="_registerRequest.FirstName" class="form-control form-control-lg border-primary shadow-sm" placeholder="First Name" aria-label="First Name" />
+                        <ValidationMessage For="@(() => _registerRequest.FirstName)" class="text-danger fs-6" />
+                    </div>
+                    <div class="col-md-6">
+                        <InputText @bind-Value="_registerRequest.LastName" class="form-control form-control-lg border-primary shadow-sm" placeholder="Last Name" aria-label="Last Name" />
+                        <ValidationMessage For="@(() => _registerRequest.LastName)" class="text-danger fs-6" />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-12">
+                        <InputText @bind-Value="_registerRequest.Email" class="form-control form-control-lg border-primary shadow-sm" placeholder="Email Address" aria-label="Email Address" />
+                        <ValidationMessage For="@(() => _registerRequest.Email)" class="text-danger fs-6" />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="col-12">
+                        <InputText @bind-Value="_registerRequest.Password" type="password" class="form-control form-control-lg border-primary shadow-sm" placeholder="Password" aria-label="Password" />
+                        <ValidationMessage For="@(() => _registerRequest.Password)" class="text-danger fs-6" />
+                    </div>
+
+                    <!-- Address Section -->
+                    <div class="col-12 mt-4">
+                        <h5 class="text-primary fw-bold mb-2">Address Info</h5>
+                    </div>
+
+                    <div class="col-md-6">
+                        <select @bind="_registerRequest.Address.GovernorateId" class="form-select shadow-sm" aria-label="Select Governorate" @oninput="@(e => OnGovernorateChanged(e))">
+                            <option value="0">Select Governorate</option>
+                            @foreach (var governrate in _governrateResponse)
+                            {
+                                <option value="@governrate.Id">@governrate.Name</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => _registerRequest.Address.GovernorateId)" class="text-danger fs-6" />
+                    </div>
+                    <div class="col-md-6">
+                        <select @bind="_registerRequest.Address.CityId" class="form-select shadow-sm" aria-label="Select City" @oninput="@(e => OnGovernorateChanged(e))">
+                            <option value="0">Select City</option>
+                            @foreach (var cities in _citiesResponse)
+                            {
+                                <option value="@cities.Id">@cities.Name</option>
+                            }
+                        </select>
+                        <ValidationMessage For="@(() => _registerRequest.Address.CityId)" class="text-danger fs-6" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <InputText @bind-Value="_registerRequest.Address.Street" class="form-control border-primary shadow-sm" placeholder="Street" aria-label="Street" />
+                        <ValidationMessage For="@(() => _registerRequest.Address.Street)" class="text-danger fs-6" />
+                    </div>
+                    <div class="col-md-6">
+                        <InputText @bind-Value="_registerRequest.Address.AddressDetails" class="form-control border-primary shadow-sm" placeholder="Address Details" aria-label="Address Details" />
+                        <ValidationMessage For="@(() => _registerRequest.Address.AddressDetails)" class="text-danger fs-6" />
+                    </div>
+
+                    <!-- Phone Numbers Section -->
+                    <div class="col-12 mt-4 d-flex justify-content-between align-items-center">
+                        <h5 class="text-primary fw-bold mb-0">Phone Numbers</h5>
+                        @if (_registerRequest.PhoneNumbers.Count < 2)
+                        {
+                            <button type="button" class="btn btn-outline-primary btn-sm" @onclick="AddPhoneNumber" title="Add Phone Number">➕ Add</button>
+                        }
+                    </div>
+
+                    @for (int i = 0; i < _registerRequest.PhoneNumbers.Count; i++)
+                    {
+                        var index = i;
+                        var phone = _registerRequest.PhoneNumbers[i];
+                        <div class="row g-2 mb-3 align-items-center">
+                            <div class="col-md-6 col-12">
+                                <InputText @bind-Value="phone.Number" class="form-control form-control-lg shadow-sm" placeholder="Enter phone number" aria-label="Phone Number" />
+                                <ValidationMessage For="() => phone.Number" class="text-danger fs-6" />
+                            </div>
+                            <div class="col-md-4 col-8 d-flex align-items-center">
+                                <div class="form-check ms-1">
+                                    <input type="radio" name="primaryPhone" class="form-check-input" checked="@phone.IsPrimary" @onchange="() => SetAsPrimary(i)" />
+                                    <label class="form-check-label text-primary ms-2">Primary</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-4 text-end">
+                                @if (_registerRequest.PhoneNumbers.Count > 1)
+                                {
+                                    <button type="button" class="btn text-danger btn-sm" @onclick="() => RemovePhoneNumber(index)" title="Remove Phone Number">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                        </svg>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Submit Button -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fs-5 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-lg me-2" viewBox="0 0 16 16">
+                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                            </svg>
+                            Register
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+
+            <!-- Error Message -->
+            @if (!string.IsNullOrWhiteSpace(_errorMessage))
+            {
+                <div class="alert alert-danger mt-4" role="alert">
+                    <strong>⚠️ Error:</strong> @_errorMessage
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Inputs focus effect */
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+    }
+
+    /* Button hover effect */
+    .btn:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Smooth transition */
+    .btn, .form-control, .form-select {
+        transition: all 0.3s ease;
+    }
+</style>
