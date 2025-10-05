@@ -1,4 +1,4 @@
-﻿@using Radzen
+@using Radzen
 @using Radzen.Blazor
 @using RowadSystem.UI.Features
 @using RowadSystem.UI.Features.Account
@@ -30,7 +30,7 @@
                     </a>
 
                     <!-- Mobile Menu Button -->
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavOffcanvas" aria-controls="mobileNavOffcanvas" aria-label="Open navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
@@ -93,6 +93,17 @@
                     </div>
                 </div>
             </nav>
+
+            <!-- Offcanvas Mobile Navigation -->
+            <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileNavOffcanvas" aria-labelledby="mobileNavOffcanvasLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="mobileNavOffcanvasLabel">Menu</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <NavMenu />
+                </div>
+            </div>
         </header>
 
         <!-- Modal Component -->

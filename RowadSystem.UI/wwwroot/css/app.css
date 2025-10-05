@@ -10,6 +10,11 @@ html, body {
     background-color: #e1e6ea !important;
 }
 
+/* Reserve space for fixed navbar on small screens too */
+body {
+    padding-top: 70px;
+}
+
 h1:focus {
     outline: none;
 }
@@ -149,23 +154,27 @@ code {
 
 /* تخصيص شريط البحث */
 .search-input {
-    width: 100%; /* توسيع العرض ليكون مرن */
-    max-width: 500px; /* تحديد أقصى عرض */
-    padding-left: 30px; /* مساحة على اليسار */
-    padding-right: 50px; /* مساحة للزر مع زيادة للمساحة */
-    border-radius: 25px; /* حواف دائرية */
-    background-color: #fff; /* لون الخلفية */
-    border: 1px solid #ddd; /* الحدود */
+    width: 100%;
+    max-width: 100%;
+    padding-left: 30px;
+    padding-right: 44px;
+    border-radius: 25px;
+    background-color: #fff;
+    border: 1px solid #ddd;
     transition: all 0.3s ease;
-    font-size: 16px; /* حجم خط مناسب */
-    height: 45px; /* ارتفاع مناسب */
+    font-size: 16px;
+    height: 45px;
 }
 
 .search-input:focus {
-    width: 500px; /* توسيع العرض بشكل أكبر عند التركيز */
-    max-width: 600px; /* الحد الأقصى عند التركيز */
-    border-color: #007bff; /* تغيير اللون عند التركيز */
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* تأثير الظل عند التركيز */
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+@media (min-width: 992px) {
+    .search-input {
+        max-width: 500px;
+    }
 }
 
 /* تخصيص الزر داخل شريط البحث */
