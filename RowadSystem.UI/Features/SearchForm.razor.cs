@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 
 namespace RowadSystem.UI.Features;
 
@@ -22,8 +22,26 @@ public partial class SearchForm
         }
     }
 
+    private void ClearSearch()
+    {
+        searchValue = string.Empty;
+        navigationManager.NavigateTo("/");
+    }
 
-    
+    private void OnSearchFocus()
+    {
+        // Can be used for future enhancements like showing search suggestions
+    }
 
+    private void OnSearchBlur()
+    {
+        // Can be used for future enhancements
+    }
+
+    private string GetPlaceholderText()
+    {
+        // Responsive placeholder text based on screen size
+        return "Search products...";
+    }
 }
 
