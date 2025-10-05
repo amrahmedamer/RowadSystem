@@ -1,13 +1,21 @@
 
 
-html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+/* Typographic and color variables */
+:root {
+    --rs-font-sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --rs-bg: #e1e6ea;
+    --rs-primary: #0d6efd;
+    --rs-primary-dark: #0b5ed7;
+    --rs-danger: #dc3545;
+    --rs-radius: 1rem;
+    --rs-shadow-sm: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 html, body {
+    font-family: var(--rs-font-sans);
     height: 100%;
     margin: 0;
-    background-color: #e1e6ea !important;
+    background-color: var(--rs-bg) !important;
 }
 
 h1:focus {
@@ -20,8 +28,8 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: var(--rs-primary);
+    border-color: var(--rs-primary-dark);
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -111,11 +119,7 @@ code {
 }
 
 .rounded-custom {
-    border-radius: 0.50rem !important;
-}
-
-.rounded-custom {
-    border-radius: 1rem !important;
+    border-radius: var(--rs-radius) !important;
 }
 
 .section-header {
@@ -149,39 +153,38 @@ code {
 
 /* تخصيص شريط البحث */
 .search-input {
-    width: 100%; /* توسيع العرض ليكون مرن */
-    max-width: 500px; /* تحديد أقصى عرض */
-    padding-left: 30px; /* مساحة على اليسار */
-    padding-right: 50px; /* مساحة للزر مع زيادة للمساحة */
-    border-radius: 25px; /* حواف دائرية */
-    background-color: #fff; /* لون الخلفية */
-    border: 1px solid #ddd; /* الحدود */
+    width: 100%;
+    max-width: 500px;
+    padding-left: 30px;
+    padding-right: 50px;
+    border-radius: 25px;
+    background-color: #fff;
+    border: 1px solid #ddd;
     transition: all 0.3s ease;
-    font-size: 16px; /* حجم خط مناسب */
-    height: 45px; /* ارتفاع مناسب */
+    font-size: 16px;
+    height: 45px;
 }
 
 .search-input:focus {
-    width: 500px; /* توسيع العرض بشكل أكبر عند التركيز */
-    max-width: 600px; /* الحد الأقصى عند التركيز */
-    border-color: #007bff; /* تغيير اللون عند التركيز */
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* تأثير الظل عند التركيز */
+    max-width: 600px;
+    border-color: var(--rs-primary);
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.35);
 }
 
 /* تخصيص الزر داخل شريط البحث */
 .search-input + .btn {
-    background-color: #007bff;
+    background-color: var(--rs-primary);
     color: #fff;
     border-radius: 50%;
     padding: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--rs-shadow-sm);
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
 }
 
     .search-input + .btn:hover {
-        background-color: #0056b3;
+        background-color: var(--rs-primary-dark);
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
     }
 
@@ -200,17 +203,16 @@ code {
 
 /* تنسيق الأيقونة */
 .bi-search {
-    position: absolute; /* تحديد موقع الأيقونة داخل الحقل */
-    left: 10px; /* المسافة من الحافة اليسرى */
+    position: absolute;
+    left: 10px;
     top: 50%;
-    transform: translateY(-50%); /* لضبط الأيقونة بشكل عمودي */
-    fill: #007bff; /* لون الأيقونة */
-    
+    transform: translateY(-50%);
+    fill: var(--rs-primary);
 }
 /* تأثير عند التفاعل مع الحقل */
 .search-input:focus {
-    border-color: #007bff; /* لون الحدود عند التركيز */
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* تأثير الظل عند التركيز */
+    border-color: var(--rs-primary);
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.35);
 }
 
 /* تأثير عند التمرير على الحقل */
@@ -225,17 +227,10 @@ code {
 }
 
 
-@media (min-width: 641px) {
-    .navbar-toggler {
-        display: none;
-    }
-
-    .collapse {
-        display: block;
-    }
-
+/* Ensure nav menu scroll on desktop */
+@media (min-width: 768px) {
     .nav-scrollable {
-        height: calc(100vh - 4rem);
+        max-height: calc(100vh - var(--rs-content-padding-top) - 40px);
         overflow-y: auto;
     }
 }

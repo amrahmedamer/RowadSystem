@@ -1,6 +1,12 @@
 
+/* Base layout spacing to account for fixed navbar */
+:root {
+    --rs-navbar-height: 70px;
+    --rs-content-padding-top: calc(var(--rs-navbar-height) + 30px);
+}
+
 body {
-    padding-top: 100px;
+    padding-top: var(--rs-content-padding-top);
 }
 
 /* Custom navbar with gradient background */
@@ -92,16 +98,16 @@ body {
 /* Sidebar Box Container */
 .sidebar.box-container {
     background: linear-gradient(180deg, #ffffff, #f8f9fa);
-    color: #fff;
-    height: calc(100vh - 110px);
+    color: #212529;
+    height: calc(100vh - var(--rs-content-padding-top) - 40px);
     position: fixed;
-    top: 100px;
+    top: var(--rs-content-padding-top);
     left: 1rem;
     width: calc(16.666% - 1rem);
     overflow-y: auto;
     padding-right: 4px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.4) transparent; /* للفايرفوكس */
+    scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
     z-index: 101;
     border-radius: .625rem;
 }
@@ -115,6 +121,21 @@ body {
         padding: 1rem;
         transition: all 0.3s ease;
     }
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .sidebar.box-container {
+        position: static;
+        height: auto;
+        width: 100%;
+        left: 0;
+        top: 0;
+    }
+
+    .custom-navbar {
+        height: var(--rs-navbar-height);
+    }
+}
 
 
 
