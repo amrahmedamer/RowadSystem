@@ -1,48 +1,172 @@
 
 
-/* Navbar Style */
-.navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: none;
-    padding: 10px;
+/* ============================================
+   RESPONSIVE NAVIGATION MENU STYLES
+   ============================================ */
+
+/* Navigation container */
+.nav-scrollable {
+    height: 100%;
+    overflow-y: auto;
+    padding: 0;
 }
 
-.top-row {
-    height: 4rem;
-    background-color: rgba(0, 0, 0, 0.8);
+/* Navigation items */
+.nav-item {
+    margin-bottom: 0.25rem;
 }
 
-.navbar-brand {
-    font-size: 1.3rem;
-    color: #fff;
-    font-weight: bold;
-}
-
-/* Links Style */
 .nav-item ::deep a {
-    color: #999; /* اللون الرمادي */
-    border-radius: 10px;
-    height: 3.5rem;
+    color: #495057;
+    border-radius: var(--border-radius);
     display: flex;
     align-items: center;
-    line-height: 3.5rem;
-    transition: background-color 0.3s, color 0.3s;
-    padding: 0 15px;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    transition: var(--transition-base);
+    font-weight: 500;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
 }
 
-.nav-item ::deep a.active {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #00aaff; /* Highlight color */
+.nav-item ::deep a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.nav-item ::deep a:hover::before {
+    left: 100%;
 }
 
 .nav-item ::deep a:hover {
-    background-color: rgba(0, 0, 0, 0.1); /* اللون الأسود الغامق عند التمرير */
-    color: #333; /* اللون الأسود الغامق للنص */
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0.05) 100%);
+    color: var(--primary-color);
+    transform: translateX(5px);
 }
 
+.nav-item ::deep a.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-item ::deep a svg {
+    margin-right: 0.75rem;
+    transition: var(--transition-base);
+}
+
+.nav-item ::deep a:hover svg {
+    transform: scale(1.1);
+}
+
+/* Dropdown styles */
+.nav-item a {
+    cursor: pointer;
+    user-select: none;
+}
 
 .dropdown-toggle::after {
-    display: none; /* يخفي السهم الافتراضي */
+    display: none;
+}
+
+/* Dropdown content */
+.ms-2 {
+    margin-left: 1rem !important;
+    border-left: 2px solid rgba(0, 123, 255, 0.2);
+    padding-left: 1rem;
+}
+
+.ms-2 .nav-item ::deep a {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.ms-2 .nav-item ::deep a:hover {
+    color: var(--primary-color);
+    background: rgba(0, 123, 255, 0.05);
+}
+
+/* ============================================
+   MOBILE RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 991.98px) {
+    .mobile-nav-menu .nav-item ::deep a {
+        padding: 1rem 1.5rem;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .mobile-nav-menu .nav-item:last-child ::deep a {
+        border-bottom: none;
+    }
+    
+    .mobile-nav-menu .ms-2 {
+        margin-left: 0 !important;
+        border-left: none;
+        padding-left: 0;
+        background: rgba(0, 0, 0, 0.02);
+    }
+    
+    .mobile-nav-menu .ms-2 .nav-item ::deep a {
+        padding-left: 3rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================
+   ENHANCED DROPDOWN ANIMATIONS
+   ============================================ */
+
+.nav-item a[data-bs-toggle] {
+    position: relative;
+}
+
+.nav-item a[data-bs-toggle] svg:last-child {
+    transition: transform 0.3s ease;
+}
+
+.nav-item a[aria-expanded="true"] svg:last-child {
+    transform: rotate(180deg);
+}
+
+/* Smooth dropdown transitions */
+.ms-2.mt-2 {
+    animation: slideDown 0.3s ease-out;
+}
+
+.d-none {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
 }
 
 

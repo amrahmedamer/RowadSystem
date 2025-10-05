@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using RowadSystem.API.Helpers;
 using RowadSystem.Shard.Contract.Helpers;
 using RowadSystem.Shard.Contract.Products;
@@ -110,5 +110,11 @@ public partial class ShopPage
     private void ShoopingCart_OnCountChanged(int obj)
     {
         throw new NotImplementedException();
+    }
+
+    private void QuickView(ProductResponse product)
+    {
+        // Navigate to product details page
+        NavigationManager.NavigateTo($"/Products/Details/{product.Id}");
     }
 }

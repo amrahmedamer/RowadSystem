@@ -1,7 +1,11 @@
 
 body {
-    padding-top: 100px;
+    padding-top: var(--navbar-height);
 }
+
+/* ============================================
+   RESPONSIVE NAVBAR STYLES
+   ============================================ */
 
 /* Custom navbar with gradient background */
 .custom-navbar {
@@ -9,11 +13,31 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 70px;
-    background: linear-gradient(90deg, #007bff, #0056b3);
+    height: var(--navbar-height);
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
     z-index: 1030;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
-    transition: all 0.3s ease-in-out; /* Smooth transition */
+    box-shadow: var(--shadow);
+    transition: var(--transition-base);
+    backdrop-filter: blur(10px);
+}
+
+/* Responsive navbar logo */
+.navbar-logo {
+    height: 50px;
+    width: auto;
+    transition: var(--transition-base);
+}
+
+@media (max-width: 991.98px) {
+    .navbar-logo {
+        height: 40px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .navbar-logo {
+        height: 35px;
+    }
 }
 
     /* Navbar links */
@@ -80,41 +104,127 @@ body {
 
 
 
+/* ============================================
+   RESPONSIVE LAYOUT STYLES
+   ============================================ */
+
+/* Main wrapper */
+.main-wrapper {
+    padding-top: var(--navbar-height);
+    min-height: 100vh;
+}
+
+/* Sidebar wrapper */
+.sidebar-wrapper {
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    height: calc(100vh - var(--navbar-height));
+    z-index: 1020;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-container {
+    height: 100%;
+    overflow-y: auto;
+    padding: 1.5rem 1rem;
+}
+
+/* Main content */
+.main-content {
+    margin-left: 0;
+    transition: var(--transition-base);
+}
+
+@media (min-width: 992px) {
+    .main-content {
+        margin-left: 25%; /* col-lg-3 */
+    }
+}
+
+@media (min-width: 1200px) {
+    .main-content {
+        margin-left: 16.666667%; /* col-xl-2 */
+    }
+}
+
+.content-wrapper {
+    padding: 2rem 1.5rem;
+    min-height: calc(100vh - var(--navbar-height));
+}
+
+@media (max-width: 991.98px) {
+    .content-wrapper {
+        padding: 1.5rem 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .content-wrapper {
+        padding: 1rem 0.75rem;
+    }
+}
+
+/* ============================================
+   MOBILE OFFCANVAS STYLES
+   ============================================ */
+
+.mobile-nav-menu {
+    padding: 0;
+}
+
+.mobile-nav-menu .nav-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.mobile-nav-menu .nav-link {
+    padding: 1rem 1.5rem;
+    color: #333;
+    font-weight: 500;
+    transition: var(--transition-base);
+}
+
+.mobile-nav-menu .nav-link:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    color: var(--primary-color);
+}
+
+.mobile-nav-menu .nav-link.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Offcanvas enhancements */
+.offcanvas {
+    backdrop-filter: blur(10px);
+}
+
+.offcanvas-header {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+/* ============================================
+   LEGACY BOX CONTAINER STYLES (Updated)
+   ============================================ */
+
 /* Default Box Container Styling */
 .box-container {
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 1.5rem;
+    border: none;
+    border-radius: var(--border-radius-lg);
     padding: 1.5rem;
-    background-color: #fff;
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+    margin-bottom: 1.5rem;
 }
 
-/* Sidebar Box Container */
-.sidebar.box-container {
-    background: linear-gradient(180deg, #ffffff, #f8f9fa);
-    color: #fff;
-    height: calc(100vh - 110px);
-    position: fixed;
-    top: 100px;
-    left: 1rem;
-    width: calc(16.666% - 1rem);
-    overflow-y: auto;
-    padding-right: 4px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.4) transparent; /* للفايرفوكس */
-    z-index: 101;
-    border-radius: .625rem;
+.box-container:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
 }
-
-
-    /* Box container card with a similar light gray background */
-    .sidebar.box-container .card {
-        background-color: rgba(169, 183, 193, 0.9); /* Using the same light gray background */
-        border: 1px solid rgba(169, 183, 193, 0.7);
-        border-radius: 1rem;
-        padding: 1rem;
-        transition: all 0.3s ease;
-    }
 
 
 
